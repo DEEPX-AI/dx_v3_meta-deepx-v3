@@ -22,19 +22,14 @@ SUMMARY = "DEEPX-V3 Image with busybox init system"
 DESCRIPTION = "A minimal DEEPX image using busybox init as the init process"
 LICENSE = "MIT"
 
-# Validate init manager configuration - skip if wrong init manager
+#
+# Init Manager Validation
+#
+# Require busybox init manager - validation handled by deepx-image-validate class
 REQUIRED_INIT_MANAGER = "busybox"
 
-python () {
-    init_manager = d.getVar('VIRTUAL-RUNTIME_init_manager')
-    required = d.getVar('REQUIRED_INIT_MANAGER')
-    pn = d.getVar('PN')
-
-    if init_manager != required:
-        raise bb.parse.SkipRecipe("Image '%s' requires VIRTUAL-RUNTIME_init_manager='%s' but '%s' is configured. Skipping." % (pn, required, init_manager))
-}
-
 inherit core-image
+inherit deepx-image-validate
 inherit deepx-image-skeleton
 inherit deepx-image-wic
 

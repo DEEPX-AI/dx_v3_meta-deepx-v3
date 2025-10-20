@@ -22,22 +22,17 @@ SUMMARY = "DEEPX minimal tiny image with systemd"
 DESCRIPTION = "Ultra-minimal DEEPX initramfs with systemd - optimized for smallest size"
 LICENSE = "MIT"
 
-# Validate init manager configuration - skip if wrong init manager
+#
+# Init Manager Validation
+#
+# Require systemd init manager - validation handled by deepx-image-validate class
 REQUIRED_INIT_MANAGER = "systemd"
-
-python () {
-    init_manager = d.getVar('VIRTUAL-RUNTIME_init_manager')
-    required = d.getVar('REQUIRED_INIT_MANAGER')
-    pn = d.getVar('PN')
-
-    if init_manager != required:
-        raise bb.parse.SkipRecipe("Image '%s' requires VIRTUAL-RUNTIME_init_manager='%s' but '%s' is configured. Skipping." % (pn, required, init_manager))
-}
 
 # Inherit core image class
 inherit core-image
 inherit extrausers
 
+inherit deepx-image-validate
 inherit deepx-image-account
 inherit deepx-image-cpio
 inherit deepx-image-systemd
