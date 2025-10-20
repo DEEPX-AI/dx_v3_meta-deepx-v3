@@ -1,0 +1,68 @@
+{
+	"totalInstance": 1,
+	"useSubSystem": 1,
+	"instanceCfg": [
+	{
+		"hpId": 0,
+		"instanceEnable": 1,
+		"bufferType": "userptr",
+		"inputType": "Sensor",      "//": "Invalid, Sensor, Image, Tpg, Max",
+		"workMode": 2,              "//": "1:Stream_mode  2:Mcm_mode  3:Rdma_mode",
+		"modeInfo":
+		{
+			"portId": 13,       "//": "1:CAMDEV_MCM_PORT_0, 2:CAMDEV_MCM_PORT_1, ...",
+			"mcmOp": 2,         "//": "1:CAMDEV_MCM_OP_SW, 2:CAMDEV_MCM_OP_HW"
+		},
+		"streamDuration": 20,       "//": "Second",
+
+		"pathCfg":[
+			{
+				"pathName": "READ",
+				"pathEnable": 1,
+				"bufferNumber":4,
+				"pathWidth": 1920,
+				"pathHeight": 1080,
+				"format": "RAW8"
+			},
+			{
+				"pathName": "MP",
+				"pathEnable": 1,
+				"bufferNumber": 6,
+				"pathWidth": 1920,
+				"pathHeight": 1080,
+				"format": "YUV420SP"
+			}
+		],
+		"sensorInfo":
+		{
+			"sensorName": "deepx_vs",
+			"modeIndex": 0,
+			"resolutionWidth": 1920,
+			"resolutionHeight": 1080,
+			"fps": 3
+		},
+		"vi200Info":
+		{
+			"enable": 1,
+			"aptHaltEn": 0,
+			"bufSize": "0x4",      "//": "Maximum value does not exceed 0x10",
+			"parity": 0,           "//": "0: ADAPTER_PARITY_ODD  1: ADAPTER_PARITY_EVEN",
+			"ppc":  0,             "//": "0: ADAPTER_1PPC        1: ADAPTER_2PPC",
+			"blockFrames": 0,
+			"irqMode": 0,          "//": "0: ADAPTER_AUTO_IRQ    1: ADAPTER_MANUAL_IRQ",
+			"ipiMode": 1,          "//": "0: ipi 16bit    1: ipi 48bit",
+			"bwl": "0x00073333",
+ 			"ecc": "0x22122be9",
+ 			"hblank": "0x8fc",
+			"vblank": "0x514",
+			"rtVsa": "0x64",
+			"rtVbp": 200,
+			"rtVfp": 200,
+			"rtHsa": "0x64",
+			"rtHbp": 200,
+			"rtHfp": 200,
+			"dvpId": 0,            "//": "0: DVP_CROSSBAR_ID_0, 1: DVP_CROSSBAR_ID_1, 2: DVP_CROSSBAR_ID_2, 3: DVP_CROSSBAR_ID_3"
+		}
+	}
+	]
+}

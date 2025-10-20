@@ -1,0 +1,15 @@
+[Unit]
+Description=ISP Media Server Daemon
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/isp_media_server.pid
+ExecStart=/usr/bin/isp_media_serverd.sh -c start
+ExecStop=/usr/bin/isp_media_serverd.sh -c stop
+ExecReload=/usr/bin/isp_media_serverd.sh -c restart
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
