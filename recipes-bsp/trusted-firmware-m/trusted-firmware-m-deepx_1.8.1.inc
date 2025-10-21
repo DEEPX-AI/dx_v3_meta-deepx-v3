@@ -33,15 +33,16 @@ TFM_SECURE_LOG_LEVEL ?= "2"
 TFM_DDR_MTS ?= "6400"
 
 # Enhanced cryptographic key management for secure boot, Default development key paths
-TFM_BOOT_KEY_PATH ??= "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_BOOT_KEY_DIR}"
-TFM_USER_KEY_PATH ??= "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_USER_KEY_DIR}"
+TFM_SIGN_BOOT_KEY_PATH = "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_BOOT_KEY_DIR}"
+TFM_SIGN_USER_KEY_PATH = "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_USER_KEY_DIR}"
 
 # Production key paths (set in machine configuration for better security)
-TFM_PRODUCTION_KEY_PATH ??= ""
+TFM_PRODUCTION_BOOT_KEY_PATH ??= ""
+TFM_PRODUCTION_USER_KEY_PATH ??= ""
 
 # Use production keys if specified, otherwise fall back to development keys
-TFM_EFFECTIVE_BOOT_KEY_PATH = "${@d.getVar('TFM_PRODUCTION_KEY_PATH') or d.getVar('TFM_BOOT_KEY_PATH')}"
-TFM_EFFECTIVE_USER_KEY_PATH = "${@d.getVar('TFM_PRODUCTION_KEY_PATH') or d.getVar('TFM_USER_KEY_PATH')}"
+TFM_EFFECTIVE_BOOT_KEY_PATH = "${@d.getVar('TFM_PRODUCTION_BOOT_KEY_PATH') or d.getVar('TFM_SIGN_BOOT_KEY_PATH')}"
+TFM_EFFECTIVE_USER_KEY_PATH = "${@d.getVar('TFM_PRODUCTION_USER_KEY_PATH') or d.getVar('TFM_SIGN_USER_KEY_PATH')}"
 
 # Platform validation - must be set by machine configuration
 TFM_PLATFORM ?= ""

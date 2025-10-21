@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 # Data partition configuration
 IMAGE_DATA_PART_DEVICE_NODE ??= ""
-IMAGE_DATA_PART_WAIT_TIME ??= "120"
+IMAGE_DATA_PART_WAIT_TIME ??= "2"
 IMAGE_DATA_PART_MOUNT_OPTIONS ??= "defaults,noatime,nofail"
 
 # Unit names

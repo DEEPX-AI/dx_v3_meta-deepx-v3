@@ -20,16 +20,14 @@ B = "${WORKDIR}/build"
 UBOOT_LOAD_ADDRESS ?= "0x80400000"
 
 # Key paths - can be overridden in machine configuration for better security
-UBOOT_BOOT_KEY_PATH ??= "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_BOOT_KEY_DIR}"
-UBOOT_USER_KEY_PATH ??= "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_USER_KEY_DIR}"
+UBOOT_SIGN_KEY_PATH ??= "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_USER_KEY_DIR}"
 
 # Alternative key paths for production builds (set in machine conf or local.conf)
 # Example: UBOOT_PRODUCTION_KEY_PATH = "/secure/keys/production"
 UBOOT_PRODUCTION_KEY_PATH ??= ""
 
 # Use production keys if specified, otherwise fall back to development keys
-UBOOT_EFFECTIVE_BOOT_KEY_PATH = "${@d.getVar('UBOOT_PRODUCTION_KEY_PATH') or d.getVar('UBOOT_BOOT_KEY_PATH')}"
-UBOOT_EFFECTIVE_USER_KEY_PATH = "${@d.getVar('UBOOT_PRODUCTION_KEY_PATH') or d.getVar('UBOOT_USER_KEY_PATH')}"
+UBOOT_EFFECTIVE_KEY_PATH = "${@d.getVar('UBOOT_PRODUCTION_KEY_PATH') or d.getVar('UBOOT_SIGN_KEY_PATH')}"
 
 # Custom defconfig task to set up U-Boot configuration
 do_defconfig() {
@@ -37,6 +35,7 @@ do_defconfig() {
     # UBOOT_MACHINE is the defconfig name
     oe_runmake -C ${B} ${UBOOT_MACHINE}
 }
+
 do_defconfig[nostamp] = "1"
 addtask defconfig after do_configure
 
@@ -64,9 +63,9 @@ fakeroot do_sign_image() {
             "--image_type" "$image_type" \
             "--load_address" "$load_addr" \
             "--crc_disable" \
-            "--content_pem" "${UBOOT_EFFECTIVE_BOOT_KEY_PATH}/user_key.pem" \
-            "--content_pub" "${UBOOT_EFFECTIVE_BOOT_KEY_PATH}/user_key.pub" \
-            "--content_pwd" "${UBOOT_EFFECTIVE_BOOT_KEY_PATH}/user_key.pwd"; then
+            "--content_pem" "${UBOOT_EFFECTIVE_KEY_PATH}/user_key.pem" \
+            "--content_pub" "${UBOOT_EFFECTIVE_KEY_PATH}/user_key.pub" \
+            "--content_pwd" "${UBOOT_EFFECTIVE_KEY_PATH}/user_key.pwd"; then
         bbfatal "Failed to generate signed U-Boot image"
     fi
 

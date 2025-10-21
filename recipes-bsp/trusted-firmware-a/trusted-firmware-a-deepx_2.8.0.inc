@@ -28,8 +28,15 @@ TFA_INSTALL_TARGET ?= "${TFA_BUILD_TARGET}"
 
 # Image load address and secure keys path
 TFA_BL31_LOAD_ADDRESS ?= "0x80200000"
-TFA_BOOT_KEY_PATH ??= "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_BOOT_KEY_DIR}"
-TFA_USER_KEY_PATH ??= "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_USER_KEY_DIR}"
+
+# Enhanced cryptographic key management for secure boot, Default development key paths
+TFA_SIGN_KEY_PATH ??= "${RECIPE_SYSROOT_NATIVE}${SIGN_BOOT_IMAGE_USER_KEY_DIR}"
+
+# Production key paths (set in machine configuration for better security)
+TFA_PRODUCTION_KEY_PATH ??= ""
+
+# Use production keys if specified, otherwise fall back to development keys
+TFA_EFFECTIVE_KEY_PATH = "${@d.getVar('TFA_PRODUCTION_KEY_PATH') or d.getVar('TFA_SIGN_KEY_PATH')}"
 
 # No configure
 do_configure[noexec] = "1"
@@ -170,9 +177,9 @@ fakeroot do_sign_image() {
                     "--image_type" "$image_type" \
                     "--load_address" "$load_addr" \
                     "--crc_disable" \
-                    "--content_pem" "${TFA_BOOT_KEY_PATH}/user_key.pem" \
-                    "--content_pub" "${TFA_BOOT_KEY_PATH}/user_key.pub" \
-                    "--content_pwd" "${TFA_BOOT_KEY_PATH}/user_key.pwd"; then
+                    "--content_pem" "${TFA_EFFECTIVE_KEY_PATH}/user_key.pem" \
+                    "--content_pub" "${TFA_EFFECTIVE_KEY_PATH}/user_key.pub" \
+                    "--content_pwd" "${TFA_EFFECTIVE_KEY_PATH}/user_key.pwd"; then
                 bbfatal "Failed to generate signed $bin image"
             fi
             ;;
