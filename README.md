@@ -43,6 +43,50 @@ meta-deepx-v3/
 ├── recipes-libs/        # Library recipes
 └── wic/                 # WIC image creation files
 ```
+
+## Quick Start
+
+### Prerequisites
+
+- Yocto-compatible Linux distribution (Ubuntu 22.04 LTS recommended)
+- KAS build tool installed (`pip install kas`)
+- Required Yocto dependencies installed
+
+### Building with KAS
+
+```bash
+# Navigate to KAS directory
+cd meta-deepx-v3/kas
+
+# Build systemd-based standard image
+./kas-build.sh -t systemd -i standard
+
+# Build busybox-based initramfs image
+./kas-build.sh -t busybox -i initramfs
+
+# For more options
+./kas-build.sh -h
+```
+
+See [kas/README.md](kas/README.md) for detailed KAS build system usage.
+
+## Configuration
+
+For detailed configuration options including:
+- Boot stage configurations (TF-M, TF-A, U-Boot, Kernel)
+- Secure boot key management
+- Init system selection (systemd/busybox)
+- User accounts and auto-login
+- Image customization
+- Production deployment examples
+
+**See [CONFIGURATION.md](CONFIGURATION.md) for complete configuration guide.**
+
+## Documentation
+
+- **[CONFIGURATION.md](CONFIGURATION.md)** - Complete configuration guide with all available variables and examples
+- **[kas/README.md](kas/README.md)** - KAS build system usage and configuration
+
 ## Contributing
 
 Please submit patches to the DEEPX.

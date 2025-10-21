@@ -1,0 +1,23 @@
+# systemd + Initramfs Image Configuration
+#
+# This file configures the build for:
+# - Init System: systemd
+# - Image Type: Initramfs (cpio)
+#
+# Usage:
+#   kas build kas/v3-sort.yml:kas/systemd-ramfs.yml
+
+header:
+  version: 14
+
+target:
+  - deepx-image-systemd-initramfs
+
+local_conf_header:
+  init_system: |
+    VIRTUAL-RUNTIME_init_manager = "systemd"
+
+  image_type: |
+    IMAGE_FSTYPES ?= "cpio.gz cpio.lz4"
+    IMAGE_ROOTFS_EXTRA_SPACE = "0"
+    INITRAMFS_MAXSIZE ?= "262144"

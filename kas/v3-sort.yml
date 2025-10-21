@@ -1,0 +1,39 @@
+# DEEPX V3 Configuration for v3-sort Machine
+#
+# This configuration file sets machine-specific settings for v3-sort
+# You can select init system and image type using includes
+#
+# Usage Examples:
+#
+# 1. Build with systemd and standard image:
+#    kas build kas/deepx-v3-v3-sort.yml:kas/init-systemd.yml:kas/image-standard.yml
+#
+# 2. Build with busybox and standard image:
+#    kas build kas/deepx-v3-v3-sort.yml:kas/init-busybox.yml:kas/image-standard.yml
+#
+# 3. Build with systemd and initramfs:
+#    kas build kas/deepx-v3-v3-sort.yml:kas/init-systemd.yml:kas/image-initramfs.yml
+#
+# 4. Build with busybox and initramfs:
+#    kas build kas/deepx-v3-v3-sort.yml:kas/init-busybox.yml:kas/image-initramfs.yml
+
+header:
+  version: 14
+  includes:
+    - deepx-v3.yml
+
+# Override machine setting
+machine: v3-sort
+
+local_conf_header:
+  # Machine specific configuration
+  machine_config: |
+    MACHINE = "v3-sort"
+
+  # Machine specific packages (optional)
+  machine_packages: |
+    # Add v3-sort specific packages here
+    IMAGE_INSTALL:append = " isp-vsi-lib isp-vsi-module"
+
+    # FFmpeg multimedia framework (optional)
+    # IMAGE_INSTALL:append = " ffmpeg libavcodec libavformat libavutil libavfilter libswscale"

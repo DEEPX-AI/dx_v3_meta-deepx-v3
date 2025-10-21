@@ -1,0 +1,98 @@
+# DEEPX V3 Base Configuration
+# This is the base configuration for all DEEPX V3 builds
+#
+# Usage:
+#   This file should not be used directly for building
+#   Use deepx-v3-<machine>.yml instead
+
+header:
+  version: 14
+
+# Build directory configuration
+# This will create/use build directory relative to the kas file location
+build_system: oe
+
+distro: deepx-v3
+machine: UNDEFINED
+
+# Repository definitions
+repos:
+  poky:
+    url: https://git.yoctoproject.org/git/poky
+    path: ../../poky
+    branch: scarthgap
+    layers:
+      meta:
+      meta-poky:
+
+  meta-openembedded:
+    url: https://git.openembedded.org/meta-openembedded
+    path: ../../meta-openembedded
+    branch: scarthgap
+    layers:
+      meta-oe:
+      meta-python:
+      meta-multimedia:
+      meta-networking:
+
+  meta-deepx-v3:
+    path: ../../meta-deepx-v3
+    layers:
+      .:
+
+# BitBake layers configuration
+bblayers_conf_header:
+  standard: |
+    POKY_BBLAYERS_CONF_VERSION = "2"
+    BBPATH = "${TOPDIR}"
+    BBFILES ?= ""
+
+# Local configuration header
+local_conf_header:
+  # Distribution and machine (to be overridden)
+  distro: |
+    DISTRO = "deepx-v3"
+    MACHINE ?= "UNDEFINED"
+
+  # Shared directories
+  # Downloads and sstate cache are fixed under build directory
+  paths: |
+    DL_DIR ?= "${TOPDIR}/downloads"
+    SSTATE_DIR ?= "${TOPDIR}/sstate-cache"
+
+  # Package management
+  package: |
+    PACKAGE_CLASSES = "package_ipk"
+
+  # Development features
+  features: |
+    EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
+    USER_CLASSES ?= "buildstats"
+
+  # Disk space monitoring
+  diskmon: |
+    BB_DISKMON_DIRS ??= "\
+        STOPTASKS,${TMPDIR},1G,100K \
+        STOPTASKS,${DL_DIR},1G,100K \
+        STOPTASKS,${SSTATE_DIR},1G,100K \
+        STOPTASKS,/tmp,100M,100K \
+        HALT,${TMPDIR},100M,1K \
+        HALT,${DL_DIR},100M,1K \
+        HALT,${SSTATE_DIR},100M,1K \
+        HALT,/tmp,10M,1K"
+
+  # Build optimization
+  parallel: |
+    BB_NUMBER_THREADS ?= "${@oe.utils.cpu_count()}"
+    PARALLEL_MAKE ?= "-j ${@oe.utils.cpu_count()}"
+
+  # Misc settings
+  misc: |
+    PATCHRESOLVE = "noop"
+    CONF_VERSION = "2"
+    LICENSE_FLAGS_ACCEPTED += "commercial"
+
+# Environment variables
+env:
+  LC_ALL: en_US.UTF-8
+  LANG: en_US.UTF-8
