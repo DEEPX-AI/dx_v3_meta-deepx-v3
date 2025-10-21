@@ -61,7 +61,7 @@ IMAGE_LINGUAS = ""
 IMAGE_FSTYPES = "wic wic.bmap"
 
 # WIC configuration
-WKS_FILE = "deepx-v3-mmc.wks"
+WKS_FILE ?= "deepx-v3-mmc.wks"
 
 IMAGE_BOOTFS_WIC_DISK ?= "mmcblk2"
 IMAGE_BOOTFS_WIC_SIZE ?= "64M"
