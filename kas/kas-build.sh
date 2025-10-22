@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KAS_DIR="${SCRIPT_DIR}"
 
 # Default values
-MACHINE="v3-sort"
+MACHINE="v3-evb"
 INIT_SYSTEM=""
 IMAGE_TYPE=""
 ACTION="build"
@@ -42,6 +42,8 @@ print_usage() {
 	echo ""
 	echo "Optional:"
 	echo "  -m <machine>    Machine name (default: ${MACHINE})"
+	echo "                  Available machines:"
+	ls -1 "${KAS_DIR}"/v3-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/                    /'
 	echo "  -b <dir>        Build directory (default: $(realpath "${BUILD_DIR}"))"
 	echo "  -s              Enter shell instead of building"
 	echo "  -l              List all available combinations"
@@ -73,7 +75,7 @@ list_combinations() {
 	echo " - deepx-image-busybox-init-initramfs-<machine>.cpio.gz"
 	echo ""
 	logmsg "Available machines:"
-	ls -1 "${KAS_DIR}"/*.yml | grep -v "deepx-v3.yml" | grep -vE "(systemd|busybox|init|image)-" | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/  - /'
+	ls -1 "${KAS_DIR}"/v3-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/  - /'
 	echo ""
 }
 
@@ -165,7 +167,7 @@ MACHINE_FILE="${KAS_DIR}/${MACHINE}.yml"
 if [ ! -f "${MACHINE_FILE}" ]; then
 	logerr "Error: Machine file not found: ${MACHINE_FILE}"
 	logmsg "Available machines:"
-	ls -1 "${KAS_DIR}"/*.yml | grep -v "deepx-v3.yml" | grep -v "init-" | grep -v "image-" | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/  - /'
+	ls -1 "${KAS_DIR}"/v3-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/  - /'
 	exit 1
 fi
 

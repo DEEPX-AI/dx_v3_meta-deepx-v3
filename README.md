@@ -33,7 +33,7 @@ meta-deepx-v3/
 ├── classes/              # Custom BitBake classes
 ├── conf/
 │   ├── distro/          # Distribution configurations (deepx-v3)
-│   ├── machine/         # Machine(support board) configurations (v3-sort, etc.)
+│   ├── machine/         # Machine(support board) configurations (v3-sort, v3-evb, etc.)
 │   └── layer.conf       # Layer configuration
 ├── kas/                 # KAS build system configurations
 ├── recipes-bsp/         # BSP-specific recipes

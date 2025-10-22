@@ -8,7 +8,7 @@ This directory contains KAS configuration files for building DEEPX V3 images.
 - **deepx-v3.yml**: Base configuration with common settings for all builds
 
 ### Machine Configurations
-- **v3-sort.yml**: Configuration for v3-sort machine
+- **v3-evb.yml**: Configuration for v3-evb machine
 
 ### Build Configurations (Init + Image Type)
 Combined configuration files that specify both init system and image type:
@@ -36,7 +36,7 @@ Combined configuration files that specify both init system and image type:
 ./kas-build.sh -t busybox -i ramfs
 
 # Specify machine
-./kas-build.sh -t systemd -i image -m v3-sort
+./kas-build.sh -t systemd -i image -m v3-evb
 
 # Specify build directory
 ./kas-build.sh -t systemd -i image -b /path/to/build
@@ -52,35 +52,35 @@ Combined configuration files that specify both init system and image type:
 
 ```bash
 # Build with systemd and standard image
-kas build v3-sort.yml:systemd-image.yml
+kas build v3-evb.yml:systemd-image.yml
 
 # Build with busybox and initramfs
-kas build v3-sort.yml:busybox-ramfs.yml
+kas build v3-evb.yml:busybox-ramfs.yml
 
 # Enter shell
-kas shell v3-sort.yml:systemd-image.yml
+kas shell v3-evb.yml:systemd-image.yml
 ```
 
 ## Build Outputs
 
 ### systemd + image
 - Target: `deepx-image-systemd-image`
-- Output: `deepx-image-systemd-image-v3-sort.wic`
+- Output: `deepx-image-systemd-image-v3-evb.wic`
 - Format: ext4 + WIC bootable image
 
 ### systemd + ramfs
 - Target: `deepx-image-systemd-initramfs`
-- Output: `deepx-image-systemd-initramfs-v3-sort.cpio.gz`
+- Output: `deepx-image-systemd-initramfs-v3-evb.cpio.gz`
 - Format: Compressed CPIO archive
 
 ### busybox + image
 - Target: `deepx-image-busybox-init-image`
-- Output: `deepx-image-busybox-init-image-v3-sort.wic`
+- Output: `deepx-image-busybox-init-image-v3-evb.wic`
 - Format: ext4 + WIC bootable image
 
 ### busybox + ramfs
 - Target: `deepx-image-busybox-init-initramfs`
-- Output: `deepx-image-busybox-init-initramfs-v3-sort.cpio.gz`
+- Output: `deepx-image-busybox-init-initramfs-v3-evb.cpio.gz`
 - Format: Compressed CPIO archive
 
 ## Directory Layout
@@ -97,7 +97,7 @@ scarthgap/
 └── meta-deepx-v3/
     └── kas/
         ├── deepx-v3.yml       # Base configuration
-        ├── v3-sort.yml        # Machine configuration
+        ├── v3-evb.yml        # Machine configuration
         ├── systemd-*.yml      # systemd configurations
         ├── busybox-*.yml      # busybox configurations
         └── kas-build.sh       # Build helper script
