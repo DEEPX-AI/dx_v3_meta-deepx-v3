@@ -22,10 +22,19 @@ SCRIPTS_TO_DEPLOY = "scripts/mk_extractimg.sh \
         scripts/dfu-download.sh \
         scripts/flash-update.sh \
         scripts/boot-download.sh \
-        scripts/flash_table_sort.txt \
         scripts/xmodem-download.sh \
         scripts/mk_ext4img.sh \
         scripts/mk_bootparam.sh"
+
+# Extract machine suffix (remove 'v3-' prefix from MACHINE)
+def get_machine_suffix(d):
+    machine = d.getVar('MACHINE')
+    if machine and machine.startswith('v3-'):
+        return machine[3:]  # Remove 'v3-' prefix
+    return machine
+
+MACHINE_SUFFIX = "${@get_machine_suffix(d)}"
+FLASH_TABLE_FILE = "scripts/flash_table_${MACHINE_SUFFIX}.txt"
 
 JTAGS_TO_DEPLOY = "jtag/v3_cm0_attach.cmm \
         jtag/v3_a53_attach.cmm \
@@ -76,6 +85,14 @@ do_install() {
         fi
     done
 
+    # Install machine-specific flash table file
+    if [ -f "${S}/${FLASH_TABLE_FILE}" ]; then
+        cp -p "${S}/${FLASH_TABLE_FILE}" "${script_dir}"
+        bbnote "Installed ${FLASH_TABLE_FILE} to ${script_dir}"
+    else
+        bbwarn "Machine-specific flash table file not found: ${FLASH_TABLE_FILE}"
+    fi
+
     # Install specified jtags tools
     for f in ${JTAGS_TO_DEPLOY}; do
         if [ -f "${S}/${f}" ]; then
@@ -107,6 +124,12 @@ do_deploy() {
         fi
     done
 
+    # Deploy machine-specific flash table file
+    if [ -f "${script_dir}/$(basename ${FLASH_TABLE_FILE})" ]; then
+        cp -p "${script_dir}/$(basename ${FLASH_TABLE_FILE})" "${DEPLOY_DIR_IMAGE}"
+        bbnote "Deploy ${script_dir}/$(basename ${FLASH_TABLE_FILE}) to ${DEPLOY_DIR_IMAGE}"
+    fi
+
     # Deploy specified jtags tools
     if ! cp -r ${jtag_dir} ${DEPLOY_DIR_IMAGE}; then
         bbfatal "Failed to deploy jtag tools to deploy directory"
@@ -128,6 +151,11 @@ do_cleandeploy() {
             rm "${DEPLOY_DIR_IMAGE}/$(basename ${f})"
         fi
     done
+
+    # Remove machine-specific flash table file
+    if [ -f "${DEPLOY_DIR_IMAGE}/$(basename ${FLASH_TABLE_FILE})" ]; then
+        rm "${DEPLOY_DIR_IMAGE}/$(basename ${FLASH_TABLE_FILE})"
+    fi
 
     # Remove specified jtags tools
     if [ -d "${DEPLOY_DIR_IMAGE}/jtag" ]; then
