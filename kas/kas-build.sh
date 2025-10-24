@@ -13,6 +13,8 @@ INIT_SYSTEM=""
 IMAGE_TYPE=""
 ACTION="build"
 SHOW_LIST=0
+BUILD_SDK=0
+BUILD_ESDK=0
 
 # Build directory configuration
 # Can be overridden with -b option
@@ -46,6 +48,8 @@ print_usage() {
 	ls -1 "${KAS_DIR}"/v3-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/                    /'
 	echo "  -b <dir>        Build directory (default: $(realpath "${BUILD_DIR}"))"
 	echo "  -s              Enter shell instead of building"
+	echo "  -S              Build SDK (populate_sdk)"
+	echo "  -E              Build extended SDK (populate_sdk_ext)"
 	echo "  -l              List all available combinations"
 	echo "  -h              Show this help message"
 	echo ""
@@ -80,7 +84,7 @@ list_combinations() {
 }
 
 # Parse command line options with getopts
-while getopts "t:i:m:b:slh" opt; do
+while getopts "t:i:m:b:sSElh" opt; do
 	case ${opt} in
 		t)
 			INIT_SYSTEM="${OPTARG}"
@@ -96,6 +100,12 @@ while getopts "t:i:m:b:slh" opt; do
 			;;
 		s)
 			ACTION="shell"
+			;;
+		S)
+			BUILD_SDK=1
+			;;
+		E)
+			BUILD_ESDK=1
 			;;
 		l)
 			SHOW_LIST=1
@@ -130,6 +140,14 @@ if [ ${SHOW_LIST} -eq 1 ]; then
 	exit 0
 fi
 
+# Check for conflicting SDK options
+if [ ${BUILD_SDK} -eq 1 ] && [ ${BUILD_ESDK} -eq 1 ]; then
+	logerr "Error: Cannot specify both -S and -E options"
+	echo ""
+	print_usage
+	exit 1
+fi
+
 # Validate required parameters
 if [ -z "${INIT_SYSTEM}" ] || [ -z "${IMAGE_TYPE}" ]; then
 	logerr "Error: Init system (-t) and image type (-i) are required"
@@ -138,9 +156,14 @@ if [ -z "${INIT_SYSTEM}" ] || [ -z "${IMAGE_TYPE}" ]; then
 	exit 1
 fi
 
+IMAGE_NAME="deepx-image"
 # Validate init system
 case ${INIT_SYSTEM} in
-	systemd|busybox)
+	systemd)
+		IMAGE_NAME="${IMAGE_NAME}-systemd"
+		;;
+	busybox)
+		IMAGE_NAME="${IMAGE_NAME}-busybox-init"
 		;;
 	*)
 		logerr "Error: Invalid init system '${INIT_SYSTEM}'"
@@ -151,7 +174,11 @@ esac
 
 # Validate image type
 case ${IMAGE_TYPE} in
-	image|ramfs)
+	image)
+		IMAGE_NAME="${IMAGE_NAME}-image"
+		;;
+	ramfs)
+		IMAGE_NAME="${IMAGE_NAME}-initramfs"
 		;;
 	*)
 		logerr "Error: Invalid image type '${IMAGE_TYPE}'"
@@ -177,25 +204,38 @@ CONFIG_FILE="${KAS_DIR}/${INIT_SYSTEM}-${IMAGE_TYPE}.yml"
 KAS_CONFIG="${MACHINE_FILE}:${CONFIG_FILE}"
 
 # Execute action
-if [ "${ACTION}" = "build" ]; then
-	print_header "Building ${INIT_SYSTEM} + ${IMAGE_TYPE} image"
-	echo "Machine     : ${MACHINE}"
-	echo "Init        : ${INIT_SYSTEM}"
-	echo "Image       : ${IMAGE_TYPE}"
-	echo "Build Dir   : $(realpath "${KAS_BUILD_DIR}")"
-	echo "Config      : ${KAS_CONFIG}"
-	echo ""
+logmsg "Machine     : ${MACHINE}"
+logmsg "Init        : ${INIT_SYSTEM}"
+logmsg "Image       : ${IMAGE_TYPE}"
+logmsg "Image name  : ${IMAGE_NAME}"
+logmsg "Build Dir   : $(realpath "${KAS_BUILD_DIR}")"
+logmsg "Config      : ${KAS_CONFIG}"
 
-	kas build "${KAS_CONFIG}"
+if [ "${ACTION}" = "build" ]; then
+	if [ ${BUILD_SDK} -eq 1 ]; then
+		target="SDK"
+		options="-- -c populate_sdk ${IMAGE_NAME}"
+		print_header "Building SDK for ${INIT_SYSTEM} + ${IMAGE_TYPE}"
+	elif [ ${BUILD_ESDK} -eq 1 ]; then
+		target="Extended SDK"
+		options="-- -c populate_sdk_ext ${IMAGE_NAME}"
+		print_header "Building Extended SDK for ${INIT_SYSTEM} + ${IMAGE_TYPE}"
+	else
+		target="Image"
+		options=""
+		print_header "Building ${INIT_SYSTEM} + ${IMAGE_TYPE} image"
+	fi
+	logmsg "Target      : ${target}"
+	echo ""
+	command="kas build ${KAS_CONFIG} ${options}"
 
 elif [ "${ACTION}" = "shell" ]; then
 	print_header "Entering ${INIT_SYSTEM} build shell"
-	echo "Machine     : ${MACHINE}"
-	echo "Init        : ${INIT_SYSTEM}"
-	echo "Image       : ${IMAGE_TYPE}"
-	echo "Build Dir   : $(realpath "${KAS_BUILD_DIR}")"
-	echo "Config      : ${KAS_CONFIG}"
 	echo ""
-
-	kas shell "${KAS_CONFIG}"
+	command="kas shell ${KAS_CONFIG}"
 fi
+
+logmsg "$ ${command}"
+echo ""
+bash -c "${command}"
+

@@ -26,6 +26,9 @@ header:
 machine: v3-sort
 
 local_conf_header:
+  sdk_name: |
+    TOOLCHAIN_OUTPUTNAME = "deepx-v3-${SDK_ARCH}-${TUNE_PKGARCH}-toolchain-${SDK_VERSION}"
+
   # Machine specific configuration
   machine_config: |
     MACHINE = "v3-sort"
@@ -34,6 +37,19 @@ local_conf_header:
   machine_packages: |
     # Add v3-sort specific packages here
     IMAGE_INSTALL:append = " isp-vsi-lib isp-vsi-module"
+
+    # DRM library for display support
+    IMAGE_INSTALL:append = " libdrm libdrm-tests"
+
+    # V4L2 utilities and controls
+    IMAGE_INSTALL:append = " v4l-utils"
+
+    # GStreamer multimedia framework
+    IMAGE_INSTALL:append = " gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good"
+    IMAGE_INSTALL:append = " gstreamer1.0-plugins-bad gstreamer1.0-libav"
+
+    # Android ADB daemon (for target)
+    IMAGE_INSTALL:append = " android-tools-adbd"
 
     # FFmpeg multimedia framework (optional)
     # IMAGE_INSTALL:append = " ffmpeg libavcodec libavformat libavutil libavfilter libswscale"
