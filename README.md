@@ -58,14 +58,29 @@ meta-deepx-v3/
 # Navigate to KAS directory
 cd meta-deepx-v3/kas
 
-# Build systemd-based standard image
-./kas-build.sh -t systemd -i standard
+# Build systemd-based standard image (ext4/wic)
+./kas-build.sh -t systemd -i image
 
-# Build busybox-based initramfs image
-./kas-build.sh -t busybox -i initramfs
+# Build busybox-based initramfs image (cpio)
+./kas-build.sh -t busybox -i ramfs
 
-# For more options
+# Build SDK (Software Development Kit)
+./kas-build.sh -t systemd -i image -S
+
+# Build extended SDK (eSDK) - for recipe development
+./kas-build.sh -t systemd -i image -E
+
+# Specify machine (default: v3-evb)
+./kas-build.sh -t systemd -i image -m v3-sort
+
+# Enter shell for debugging
+./kas-build.sh -t systemd -i image -s
+
+# List all available options
 ./kas-build.sh -h
+
+# List all available machine and build combinations
+./kas-build.sh -l
 ```
 
 See [kas/README.md](kas/README.md) for detailed KAS build system usage.
