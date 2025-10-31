@@ -2,6 +2,23 @@
 
 DEEPX V3 Yocto/OpenEmbedded BSP Layer
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Layer Information](#layer-information)
+- [Dependencies](#dependencies)
+- [Directory Structure](#directory-structure)
+- [Prerequisites](#prerequisites)
+  - [Installing KAS](#installing-kas)
+    - [Ubuntu 20.04 and Earlier](#ubuntu-2004-and-earlier)
+    - [Ubuntu 22.04 and Later](#ubuntu-2204-and-later)
+- [Quick Start](#quick-start)
+  - [Building with KAS](#building-with-kas)
+- [Configuration](#configuration)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Overview
 
 This layer provides Board Support Package (BSP) and distribution configurations for DEEPX V3 platforms.
@@ -44,13 +61,89 @@ meta-deepx-v3/
 └── wic/                 # WIC image creation files
 ```
 
-## Quick Start
-
-### Prerequisites
+## Prerequisites
 
 - Yocto-compatible Linux distribution (Ubuntu 22.04 LTS recommended)
-- KAS build tool installed (`pip install kas`)
+- KAS build tool installed
 - Required Yocto dependencies installed
+
+### Installing KAS
+
+#### Ubuntu 20.04 and Earlier
+
+For Ubuntu 20.04 and earlier versions, you can install KAS using the traditional pip method:
+
+```bash
+# Update package list
+sudo apt update
+
+# Install Python pip (if not already installed)
+sudo apt install python3-pip
+
+# Install KAS directly with pip
+pip3 install kas
+
+# Verify installation
+kas --version
+```
+
+#### Ubuntu 22.04 and Later
+
+Ubuntu 22.04 introduced PEP 668 (externally managed environment) which restricts system-wide pip installations to prevent conflicts with system packages. Here are the recommended installation methods:
+
+**Method 1: Using pipx (Recommended)**
+```bash
+# Install pipx and KAS
+sudo apt update
+sudo apt install pipx
+pipx ensurepath
+source ~/.bashrc
+pipx install kas-container
+
+# Verify installation
+kas --version
+```
+
+**Method 2: Using virtual environment**
+```bash
+# Create and activate virtual environment
+python3 -m venv ~/kas-env
+source ~/kas-env/bin/activate
+pip install kas-container
+
+# Add alias for convenience (optional)
+echo 'alias kas-env="source ~/kas-env/bin/activate"' >> ~/.bashrc
+source ~/.bashrc
+
+# Usage: activate environment before using kas
+kas-env
+kas --version
+deactivate
+```
+
+**Method 3: Using pip with --user flag**
+```bash
+# Install to user directory
+pip install kas-container --user
+
+# Ensure ~/.local/bin is in PATH
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# Verify installation
+kas --version
+```
+
+**Method 4: Override PEP 668 (Not recommended)**
+```bash
+# Force install system-wide (may cause conflicts)
+pip install kas-container --break-system-packages
+
+# Verify installation
+kas --version
+```
+
+## Quick Start
 
 ### Building with KAS
 
