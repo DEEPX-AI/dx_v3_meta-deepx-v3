@@ -26,7 +26,8 @@ ISP_VSI_BUILD_MODE ?= "release"
 # Package files
 FILES:${PN} += "${bindir}/* ${libdir}/vsi/*"
 FILES:${PN}:append = "${@bb.utils.contains('VIRTUAL-RUNTIME_init_manager', 'busybox', \
-    ' ${sysconfdir}/rc5.d/S60isp_media_serverd', \
+    ' ${sysconfdir}/rc5.d/S60isp_media_serverd \
+      ${sysconfdir}/profile.d/isp-vsi-lib.sh', \
     ' ${systemd_system_unitdir}/isp-media.service \
       ${sysconfdir}/profile.d/isp-vsi-lib.sh \
       ${sysconfdir}/ld.so.conf.d/isp-vsi-lib.conf', d)}"
@@ -89,12 +90,14 @@ do_install() {
 
     # Install init system specific files
     if [ "${use_busybox}" = "true" ]; then
-        # Busybox: SysV init script and /etc/profile
+        # Busybox: SysV init script and profile.d
         install -d ${D}${sysconfdir}/rc5.d
         [ -f "${WORKDIR}/S60isp_media_serverd" ] && \
             install -m 0755 "${WORKDIR}/S60isp_media_serverd" ${D}${sysconfdir}/rc5.d/
 
-        echo "export LD_LIBRARY_PATH=${libdir}:${base_libdir}:${libdir}/vsi" > ${D}${sysconfdir}/profile
+        install -d ${D}${sysconfdir}/profile.d
+        echo "export LD_LIBRARY_PATH=${libdir}:${base_libdir}:${libdir}/vsi" > ${D}${sysconfdir}/profile.d/isp-vsi-lib.sh
+        chmod 0755 ${D}${sysconfdir}/profile.d/isp-vsi-lib.sh
     fi
 
     if [ "${use_systemd}" = "true" ]; then
