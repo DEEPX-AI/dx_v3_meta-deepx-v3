@@ -92,6 +92,9 @@ local_conf_header:
     CONF_VERSION = "2"
     LICENSE_FLAGS_ACCEPTED += "commercial"
 
+  sdk_name: |
+    TOOLCHAIN_OUTPUTNAME = "deepx-v3-${SDK_ARCH}-${TUNE_PKGARCH}-toolchain-${SDK_VERSION}-${MACHINE}-${IMAGE_BASENAME}"
+
 # Environment variables
 env:
   LC_ALL: en_US.UTF-8

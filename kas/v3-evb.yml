@@ -26,9 +26,6 @@ header:
 machine: v3-evb
 
 local_conf_header:
-  sdk_name: |
-    TOOLCHAIN_OUTPUTNAME = "deepx-v3-${SDK_ARCH}-${TUNE_PKGARCH}-toolchain-${SDK_VERSION}"
-
   # Machine specific configuration
   machine_config: |
     MACHINE = "v3-evb"
