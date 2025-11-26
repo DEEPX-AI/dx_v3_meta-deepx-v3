@@ -221,11 +221,11 @@ For detailed configuration options including:
 - Image customization
 - Production deployment examples
 
-**See [CONFIGURATION.md](documents/CONFIGURATION.md) for complete configuration guide.**
+**See [BSP.md](documents/BSP.md) for complete configuration guide.**
 
 ## Documentation
 
-- **[CONFIGURATION.md](documents/CONFIGURATION.md)** - Complete configuration guide with all available variables and examples
+- **[BSP.md](documents/BSP.md)** - Complete configuration guide with all available variables and examples
 - **[kas.md](documents/kas.md)** - KAS build system usage and configuration
 
 ## Contributing
