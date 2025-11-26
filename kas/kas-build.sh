@@ -90,7 +90,14 @@ while getopts "t:i:m:b:sSlh" opt; do
 			MACHINE="${OPTARG}"
 			;;
 		b)
-			BUILD_DIR="${OPTARG}"
+			# Check if build dir contains path separator or starts with /
+			if [[ "${OPTARG}" == */* ]] || [[ "${OPTARG}" == /* ]]; then
+				# Use as-is if it's a path (absolute or relative)
+				BUILD_DIR="${OPTARG}"
+			else
+				# Otherwise, use default parent directory
+				BUILD_DIR="../../${OPTARG}"
+			fi
 			;;
 		s)
 			ACTION="shell"
@@ -123,6 +130,7 @@ done
 shift $((OPTIND - 1))
 
 # Export build directory for KAS
+mkdir -p ${BUILD_DIR}
 export KAS_BUILD_DIR="${BUILD_DIR}"
 
 # Show list if requested
