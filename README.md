@@ -4,20 +4,23 @@ DEEPX V3 Yocto/OpenEmbedded BSP Layer
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Layer Information](#layer-information)
-- [Dependencies](#dependencies)
-- [Directory Structure](#directory-structure)
-- [Prerequisites](#prerequisites)
-  - [Installing KAS](#installing-kas)
-    - [Ubuntu 20.04 and Earlier](#ubuntu-2004-and-earlier)
-    - [Ubuntu 22.04 and Later](#ubuntu-2204-and-later)
-- [Quick Start](#quick-start)
-  - [Building with KAS](#building-with-kas)
-- [Configuration](#configuration)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
-- [License](#license)
+- [meta-deepx-v3](#meta-deepx-v3)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Layer Information](#layer-information)
+  - [Dependencies](#dependencies)
+  - [Directory Structure](#directory-structure)
+  - [Prerequisites](#prerequisites)
+    - [Installing KAS](#installing-kas)
+      - [Ubuntu 20.04 and Earlier](#ubuntu-2004-and-earlier)
+      - [Ubuntu 22.04 and Later](#ubuntu-2204-and-later)
+  - [Quick Start](#quick-start)
+    - [Building Image with KAS](#building-image-with-kas)
+    - [Building SDK with KAS](#building-sdk-with-kas)
+  - [Configuration](#configuration)
+  - [Documentation](#documentation)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Overview
 
@@ -145,25 +148,21 @@ kas --version
 
 ## Quick Start
 
-### Building with KAS
+### Building Image with KAS
+
+Build root filesystem images for target devices:
 
 ```bash
 # Navigate to KAS directory
 cd meta-deepx-v3/kas
 
-# Build systemd-based standard image (ext4/wic)
+# Build systemd-based standard image (ext4/wic format)
 ./kas-build.sh -t systemd -i image
 
-# Build busybox-based initramfs image (cpio)
+# Build busybox-based initramfs image (cpio format)
 ./kas-build.sh -t busybox -i ramfs
 
-# Build SDK (Software Development Kit)
-./kas-build.sh -t systemd -i image -S
-
-# Build extended SDK (eSDK) - for recipe development
-./kas-build.sh -t systemd -i image -E
-
-# Specify machine (default: v3-evb)
+# Specify target machine (default: v3-evb)
 ./kas-build.sh -t systemd -i image -m v3-sort
 
 # Enter shell for debugging
@@ -176,7 +175,41 @@ cd meta-deepx-v3/kas
 ./kas-build.sh -l
 ```
 
-See [kas/README.md](kas/README.md) for detailed KAS build system usage.
+**Build Outputs:**
+
+Images are located in `build/tmp/deploy/images/<machine>/`:
+
+
+### Building SDK with KAS
+
+Build Software Development Kits for cross-compilation:
+
+```bash
+# Navigate to KAS directory
+cd meta-deepx-v3/kas
+
+# Build standard SDK (for application development)
+./kas-build.sh -t systemd -i image -S
+
+# Build SDK for specific machine
+./kas-build.sh -t systemd -i image -m v3-sort -S
+
+# Build both image and SDK together
+./kas-build.sh -t systemd -i image -m v3-evb -S
+```
+
+**SDK Types:**
+- **Standard SDK (`-S`)**: Contains cross-compiler, libraries, and headers for application development
+
+**Build Outputs:**
+
+SDK installers are located in `build/tmp/deploy/sdk/`:
+- **Standard SDK**: `deepx-v3-x86_64-cortexa53-toolchain-3.0.sh`
+
+Example: `build/tmp/deploy/sdk/deepx-v3-x86_64-cortexa53-toolchain-3.0.sh`
+
+
+See [kas.md](documents/kas.md) for detailed KAS build system usage.
 
 ## Configuration
 
@@ -188,12 +221,12 @@ For detailed configuration options including:
 - Image customization
 - Production deployment examples
 
-**See [CONFIGURATION.md](CONFIGURATION.md) for complete configuration guide.**
+**See [CONFIGURATION.md](documents/CONFIGURATION.md) for complete configuration guide.**
 
 ## Documentation
 
-- **[CONFIGURATION.md](CONFIGURATION.md)** - Complete configuration guide with all available variables and examples
-- **[kas/README.md](kas/README.md)** - KAS build system usage and configuration
+- **[CONFIGURATION.md](documents/CONFIGURATION.md)** - Complete configuration guide with all available variables and examples
+- **[kas.md](documents/kas.md)** - KAS build system usage and configuration
 
 ## Contributing
 

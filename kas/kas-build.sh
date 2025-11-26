@@ -14,7 +14,6 @@ IMAGE_TYPE=""
 ACTION="build"
 SHOW_LIST=0
 BUILD_SDK=0
-BUILD_ESDK=0
 
 # Build directory configuration
 # Can be overridden with -b option
@@ -49,7 +48,6 @@ print_usage() {
 	echo "  -b <dir>        Build directory (default: $(realpath "${BUILD_DIR}"))"
 	echo "  -s              Enter shell instead of building"
 	echo "  -S              Build SDK (populate_sdk)"
-	echo "  -E              Build extended SDK (populate_sdk_ext)"
 	echo "  -l              List all available combinations"
 	echo "  -h              Show this help message"
 	echo ""
@@ -64,19 +62,15 @@ list_combinations() {
 	echo ""
 	logmsg " systemd + image (ext4/wic)"
 	echo " $ $0 -t systemd -i image -m <machine>"
-	echo " - deepx-image-systemd-image-<machine>.wic"
 	echo ""
 	logmsg " systemd + ramfs (cpio)"
 	echo " $ $0 -t systemd -i ramfs -m <machine>"
-	echo " - deepx-image-systemd-initramfs-<machine>.cpio"
 	echo ""
 	logmsg " busybox + image (ext4/wic)"
 	echo " $ $0 -t busybox -i image -m <machine>"
-	echo " - deepx-image-busybox-init-image-<machine>.wic"
 	echo ""
 	logmsg " busybox + ramfs (cpio)"
 	echo " $ $0 -t busybox -i ramfs -m <machine>"
-	echo " - deepx-image-busybox-init-initramfs-<machine>.cpio.gz"
 	echo ""
 	logmsg "Available machines:"
 	ls -1 "${KAS_DIR}"/v3-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/  - /'
@@ -84,7 +78,7 @@ list_combinations() {
 }
 
 # Parse command line options with getopts
-while getopts "t:i:m:b:sSElh" opt; do
+while getopts "t:i:m:b:sSlh" opt; do
 	case ${opt} in
 		t)
 			INIT_SYSTEM="${OPTARG}"
@@ -103,9 +97,6 @@ while getopts "t:i:m:b:sSElh" opt; do
 			;;
 		S)
 			BUILD_SDK=1
-			;;
-		E)
-			BUILD_ESDK=1
 			;;
 		l)
 			SHOW_LIST=1
@@ -137,15 +128,7 @@ export KAS_BUILD_DIR="${BUILD_DIR}"
 # Show list if requested
 if [ ${SHOW_LIST} -eq 1 ]; then
 	list_combinations
-	exit 0
-fi
-
-# Check for conflicting SDK options
-if [ ${BUILD_SDK} -eq 1 ] && [ ${BUILD_ESDK} -eq 1 ]; then
-	logerr "Error: Cannot specify both -S and -E options"
-	echo ""
-	print_usage
-	exit 1
+	 exit 0
 fi
 
 # Validate required parameters
@@ -216,10 +199,6 @@ if [ "${ACTION}" = "build" ]; then
 		target="SDK"
 		options="-- -c populate_sdk ${IMAGE_NAME}"
 		print_header "Building SDK for ${INIT_SYSTEM} + ${IMAGE_TYPE}"
-	elif [ ${BUILD_ESDK} -eq 1 ]; then
-		target="Extended SDK"
-		options="-- -c populate_sdk_ext ${IMAGE_NAME}"
-		print_header "Building Extended SDK for ${INIT_SYSTEM} + ${IMAGE_TYPE}"
 	else
 		target="Image"
 		options=""

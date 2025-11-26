@@ -2,6 +2,33 @@
 
 This directory contains KAS configuration files for building DEEPX V3 images.
 
+## Table of Contents
+
+- [KAS Configuration Files](#kas-configuration-files)
+  - [Table of Contents](#table-of-contents)
+  - [File Structure](#file-structure)
+    - [Base Configuration](#base-configuration)
+    - [Machine Configurations](#machine-configurations)
+    - [Build Configurations (Init + Image Type)](#build-configurations-init--image-type)
+  - [Prerequisites](#prerequisites)
+  - [Building Images](#building-images)
+    - [Using kas-build.sh (Recommended)](#using-kas-buildsh-recommended)
+    - [Using KAS directly](#using-kas-directly)
+    - [Outputs](#outputs)
+      - [systemd + image](#systemd--image)
+      - [systemd + ramfs](#systemd--ramfs)
+      - [busybox + image](#busybox--image)
+      - [busybox + ramfs](#busybox--ramfs)
+  - [Building SDK](#building-sdk)
+    - [Using kas-build.sh (Recommended)](#using-kas-buildsh-recommended-1)
+    - [Using KAS directly](#using-kas-directly-1)
+    - [Outputs](#outputs-1)
+      - [Standard SDK (`-S` option)](#standard-sdk--s-option)
+  - [Directory Layout](#directory-layout)
+    - [Repository Paths](#repository-paths)
+    - [Build Directory](#build-directory)
+    - [Build Resources](#build-resources)
+
 ## File Structure
 
 ### Base Configuration
@@ -24,7 +51,7 @@ Combined configuration files that specify both init system and image type:
 - KAS build tool installed (`pip install kas`)
 - Required Yocto dependencies installed
 
-## Usage
+## Building Images
 
 ### Using kas-build.sh (Recommended)
 
@@ -40,12 +67,6 @@ Combined configuration files that specify both init system and image type:
 
 # Specify build directory
 ./kas-build.sh -t systemd -i image -b /path/to/build
-
-# Build SDK
-./kas-build.sh -t systemd -i image -S
-
-# Build extended SDK (eSDK) - for recipe development
-./kas-build.sh -t systemd -i image -E
 
 # Enter shell for debugging
 ./kas-build.sh -t systemd -i image -s
@@ -63,44 +84,63 @@ kas build v3-evb.yml:systemd-image.yml
 # Build with busybox and initramfs
 kas build v3-evb.yml:busybox-ramfs.yml
 
-# Build SDK
-kas build v3-evb.yml:systemd-image.yml -- -c populate_sdk deepx-image-systemd-image
-
-# Build extended SDK
-kas build v3-evb.yml:systemd-image.yml -- -c populate_sdk_ext deepx-image-systemd-image
-
 # Enter shell
 kas shell v3-evb.yml:systemd-image.yml
 ```
 
-## Build Outputs
-
-### Images
+### Outputs
 
 #### systemd + image
 - Target: `deepx-image-systemd-image`
 - Output: `deepx-image-systemd-image-v3-evb.wic`
 - Format: ext4 + WIC bootable image
+- Location: `build/tmp/deploy/images/v3-evb/`
 
 #### systemd + ramfs
 - Target: `deepx-image-systemd-initramfs`
 - Output: `deepx-image-systemd-initramfs-v3-evb.cpio.gz`
 - Format: Compressed CPIO archive
+- Location: `build/tmp/deploy/images/v3-evb/`
 
 #### busybox + image
 - Target: `deepx-image-busybox-init-image`
 - Output: `deepx-image-busybox-init-image-v3-evb.wic`
 - Format: ext4 + WIC bootable image
+- Location: `build/tmp/deploy/images/v3-evb/`
 
 #### busybox + ramfs
 - Target: `deepx-image-busybox-init-initramfs`
 - Output: `deepx-image-busybox-init-initramfs-v3-evb.cpio.gz`
 - Format: Compressed CPIO archive
+- Location: `build/tmp/deploy/images/v3-evb/`
 
-### SDK
+## Building SDK
+
+### Using kas-build.sh (Recommended)
+
+```bash
+# Build SDK
+./kas-build.sh -t systemd -i image -S
+
+# Build SDK for specific machine
+./kas-build.sh -t systemd -i image -m v3-sort -S
+
+# Build both image and SDK together
+./kas-build.sh -t systemd -i image -S
+```
+
+### Using KAS directly
+
+```bash
+# Build SDK
+kas build v3-evb.yml:systemd-image.yml -- -c populate_sdk deepx-image-systemd-image
+```
+
+### Outputs
 
 #### Standard SDK (`-S` option)
-- Output: `build/tmp/deploy/sdk/deepx-v3-x86_64-cortexa53-toolchain-3.0.sh`
+- Output: `deepx-v3-x86_64-cortexa53-toolchain-3.0.sh`
+- Location: `build/tmp/deploy/sdk/`
 - Size: ~500MB - 1GB
 - Use case: Application development and cross-compilation
 - Installation: Run the `.sh` script to install SDK
@@ -126,17 +166,8 @@ source /opt/deepx-v3/3.0/environment-setup-cortexa53-deepx-linux
 source /home/user/sdk/environment-setup-cortexa53-deepx-linux
 ```
 
-#### Extended SDK (`-E` option)
-- Output: `build/tmp/deploy/sdk/deepx-v3-x86_64-cortexa53-toolchain-ext-3.0.sh`
-- Size: 5GB - 10GB+ (includes sstate-cache)
-- Use case: Recipe development, package modification, devtool workflow
-- Build time: 2-3x longer than standard SDK
-- Installation: Same as standard SDK
-
 **Note**:
 - SDK naming is simplified (machine-independent) via `TOOLCHAIN_OUTPUTNAME`
-- Use standard SDK (`-S`) for most development tasks
-- Use extended SDK (`-E`) only when you need to modify recipes or packages
 
 ## Directory Layout
 
