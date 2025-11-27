@@ -1,0 +1,39 @@
+[Unit]
+Description=Format Data Partition
+DefaultDependencies=no
+After=systemd-udev-settle.service
+Before=data.mount local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutStartSec=60s
+StandardOutput=journal+console
+StandardError=journal+console
+ExecStart=/bin/sh -c '\
+    DEV_NODE="@IMAGE_DATA_PART_DEVICE_NODE@"; \
+    MAX_WAIT=@IMAGE_DATA_PART_WAIT_TIME@; \
+    MOUNT_LABEL="data"; \
+    echo "Waiting for $DEV_NODE..."; \
+    COUNT=0; \
+    while [ ! -b "$DEV_NODE" ] && [ $COUNT -lt $MAX_WAIT ]; do \
+        sleep 1; \
+        COUNT=$((COUNT + 1)); \
+    done; \
+    if [ -b "$DEV_NODE" ]; then \
+        echo "Found $DEV_NODE..."; \
+        FS_TYPE=$(blkid -s TYPE -o value "$DEV_NODE" 2>/dev/null); \
+        if echo "$FS_TYPE" | grep -qw "ext4"; then \
+            echo "Resize $DEV_NODE ..."; \
+            resize2fs "$DEV_NODE" > /dev/null 2>&1; \
+        else \
+            echo "Format $DEV_NODE as ext4..."; \
+            mke2fs -F -t ext4 -L "$MOUNT_LABEL" "$DEV_NODE" > /dev/null 2>&1; \
+        fi; \
+        mkdir -p /data; \
+    else \
+        echo "WARNING: $DEV_NODE not found"; \
+    fi'
+
+[Install]
+WantedBy=local-fs.target

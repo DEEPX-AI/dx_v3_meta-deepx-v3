@@ -1,0 +1,8 @@
+# WIC layout for DEEPX V3 with separate boot partition
+# Partition 1: Boot partition (ext4) with kernel and device tree
+# Partition 2: Root filesystem(ext4)
+
+part /boot --source bootimg-partition --ondisk ${IMAGE_BOOTFS_WIC_DISK} --fstype=ext4 --label boot --align 4096 --fixed-size ${IMAGE_BOOTFS_WIC_SIZE} --active
+part / --source rootfs --ondisk ${IMAGE_ROOTFS_WIC_DISK} --fstype=ext4 --label root --align 4096 --fixed-size ${IMAGE_ROOTFS_WIC_SIZE} --use-uuid
+
+bootloader --ptable gpt

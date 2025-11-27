@@ -1,0 +1,47 @@
+# KAS shell history
+.kas_shell_history
+
+# Editor temporary files
+*~
+*.swp
+*.swo
+*.swn
+.*.sw?
+*#
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+.project
+.cproject
+.settings/
+
+# Python bytecode
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+*.rej
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build artifacts (if accidentally created in layer)
+*.o
+*.a
+*.so
+*.so.*
+*.log
+
+# Temporary directories
+tmp/
+temp/
+.tmp/

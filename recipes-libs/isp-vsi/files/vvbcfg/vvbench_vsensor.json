@@ -1,0 +1,12 @@
+{
+
+"config": {
+	"caseLoop": 1,
+	"caseInterval": 1,
+	"alignMask": 4096
+},
+"caseLists": [
+	"v3/vvb_001_vsensor_vi200_online_1080p_mp_preview.json",
+	"v3/vvb_002_vsensor_vi200_offline_1080p_mp_preview.json"
+]
+}

@@ -1,0 +1,42 @@
+#!/bin/sh
+
+MOUNT_DEVICE="/dev/mmcblk2p3"
+MOUNT_POINT="/data"
+MOUNT_OPTION="noatime,nosuid,nodev"
+MOUNT_LABEL="data"
+
+WAIT_TIME=2
+
+echo "Waiting for ${MOUNT_DEVICE}..."
+
+mkdir -p ${MOUNT_POINT}
+
+if mountpoint -q ${MOUNT_POINT}; then
+	echo "mounted ${MOUNT_POINT}..."
+	exit 0;
+fi
+
+COUNT=0
+while [ ! -b ${MOUNT_DEVICE} ] && [ $COUNT -lt ${WAIT_TIME} ]; do
+  sleep 1
+  COUNT=$((COUNT+1))
+done
+
+if [ -b  ${MOUNT_DEVICE} ]; then
+	echo "Found  ${MOUNT_DEVICE}..."
+    FS_TYPE=$(blkid -s TYPE -o value ${MOUNT_DEVICE} 2>/dev/null)
+	if echo "${FS_TYPE}" | grep -qw "ext4"; then
+        echo "Resize ${MOUNT_DEVICE} ..."
+		resize2fs ${MOUNT_DEVICE} > /dev/null 2>&1
+	else
+        echo "Format  ${MOUNT_DEVICE} as ext4..."
+        mke2fs -F -t ext4 -L ${MOUNT_LABEL} ${MOUNT_DEVICE} > /dev/null 2>&1
+    fi
+
+	echo "Mount  ${MOUNT_DEVICE} ${MOUNT_POINT} ${MOUNT_OPTION}"
+	if [ -n ${MOUNT_OPTION} ]; then
+		mount -o ${MOUNT_OPTION} ${MOUNT_DEVICE} ${MOUNT_POINT}
+	else
+		mount ${MOUNT_DEVICE} ${MOUNT_POINT}
+	fi
+fi

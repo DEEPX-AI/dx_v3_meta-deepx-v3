@@ -1,0 +1,11 @@
+{
+
+"config": {
+	"caseLoop": 1,
+	"caseInterval": 1,
+	"alignMask": 4096
+},
+"caseLists": [
+	"v3/vvb_002_os08a20_vi200_offline_1080p_mp_preview.json"
+]
+}

@@ -1,0 +1,40 @@
+# systemd + Standard Image Configuration
+#
+# This file configures the build for:
+# - Init System: systemd
+# - Image Type: Standard (ext4/wic)
+#
+# Usage:
+#   kas build kas/v3-sort.yml:kas/systemd-image.yml
+
+header:
+  version: 14
+
+# Environment variables for colorful shell output
+env:
+  TERM: xterm-256color
+  COLORTERM: truecolor
+  CLICOLOR: "1"
+  CLICOLOR_FORCE: "1"
+
+target:
+  - deepx-image-systemd-image
+
+local_conf_header:
+  init_system: |
+    VIRTUAL-RUNTIME_init_manager = "systemd"
+
+  image_type: |
+    # Standard Image (ext4/wic) Configuration
+    IMAGE_FSTYPES ?= "ext4 wic wic.bmap"
+
+    # WKS (Wic KickStart) File - Partition Layout Definition
+    # Default: deepx-v3-mmc.wks (boot partition + root partition)
+    # To use custom layout, create wks file in wic/ directory and set:
+    # WKS_FILE = "custom-layout.wks"
+    WKS_FILE ?= "deepx-v3-mmc.wks"
+
+  color_support: |
+    # Enable colorful output in BitBake and build tools
+    # Preserve TERM environment variable for color support
+    BB_ENV_PASSTHROUGH_ADDITIONS += "TERM COLORTERM CLICOLOR CLICOLOR_FORCE"
