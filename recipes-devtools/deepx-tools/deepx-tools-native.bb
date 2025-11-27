@@ -4,7 +4,7 @@ SUMMARY = "DEEPX V3 tools"
 HOMEPAGE = "https://deepx.ai/"
 LICENSE = "CLOSED"
 
-SRC_URI = "git://git@gh.deepx.ai/deepx/rt_v3_linux_tools;protocol=ssh;branch=main"
+SRC_URI = "git://git@github.com/DEEPX-AI/dx_v3_linux_tools;protocol=ssh;branch=main"
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"

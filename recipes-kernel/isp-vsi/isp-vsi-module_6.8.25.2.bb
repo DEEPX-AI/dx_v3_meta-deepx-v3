@@ -7,7 +7,7 @@ COMPATIBLE_MACHINE = "^v3-.*"
 inherit module
 
 # Source repository
-SRC_URI = "git://git@gh.deepx.ai/deepx/rt_v3_isp_vsi_driver;protocol=ssh;branch=main"
+SRC_URI = "git://git@github.com/DEEPX-AI/dx_v3_isp_vsi_driver;protocol=ssh;branch=main"
 SRC_URI:append = " file://bin"
 SRCREV = "${AUTOREV}"
 S = "${WORKDIR}/git"
