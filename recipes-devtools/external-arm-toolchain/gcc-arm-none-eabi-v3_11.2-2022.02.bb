@@ -7,7 +7,8 @@ COMPATIBLE_HOST = "(x86_64).*-linux"
 
 SUMMARY = "Arm GNU Toolchain - AArch32 bare-metal target (arm-none-eabi)"
 HOMEPAGE = "https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads"
-LICENSE = "GPL-3.0-with-GCC-exception & GPL-3.0-only"
+#LICENSE = "GPL-3.0-with-GCC-exception & GPL-3.0-only"
+LICENSE = "CLOSED"
 
 LIC_FILES_CHKSUM = "file://share/doc/gcc/Copying.html;md5=1f07179249795891179bb3798bac7887"
 
