@@ -14,7 +14,7 @@ INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 # Skip Version sanity
 # KERNEL_VERSION_SANITY_SKIP = "1"
 
-SRC_URI = "git://git@github.com/DEEPX-AI/dx_v3_linux-kernel;protocol=ssh;branch=main"
+SRC_URI = "git://git@github.com/DEEPX-AI/dx_v3_linux-kernel.git;protocol=ssh;branch=main"
 SRCREV = "${AUTOREV}"
 
 KERNEL_EXTRA_ARGS += "CONFIG_INITRAMFS_COMPRESSION_NONE=y"
