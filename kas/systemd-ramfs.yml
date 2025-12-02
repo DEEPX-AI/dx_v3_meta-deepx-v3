@@ -1,4 +1,4 @@
-# systemd + Initramfs Image Configuration
+# Systemd + Initramfs Image Configuration
 #
 # This file configures the build for:
 # - Init System: systemd

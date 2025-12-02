@@ -1,4 +1,4 @@
-# busybox + Initramfs Image Configuration
+# Busybox + Initramfs Image Configuration
 #
 # This file configures the build for:
 # - Init System: busybox

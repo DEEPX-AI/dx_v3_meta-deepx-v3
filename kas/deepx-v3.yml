@@ -54,8 +54,7 @@ local_conf_header:
     DISTRO = "deepx-v3"
     MACHINE ?= "UNDEFINED"
 
-  # Shared directories
-  # Downloads and sstate cache are fixed under build directory
+  # Shared directories (downloads and sstate cache under build directory)
   paths: |
     DL_DIR ?= "${TOPDIR}/downloads"
     SSTATE_DIR ?= "${TOPDIR}/sstate-cache"
@@ -91,9 +90,6 @@ local_conf_header:
     PATCHRESOLVE = "noop"
     CONF_VERSION = "2"
     LICENSE_FLAGS_ACCEPTED += "commercial"
-
-  sdk_name: |
-    TOOLCHAIN_OUTPUTNAME = "deepx-v3-${SDK_ARCH}-${TUNE_PKGARCH}-toolchain-${SDK_VERSION}-${MACHINE}-${IMAGE_BASENAME}"
 
 # Environment variables
 env:

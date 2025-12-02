@@ -1,4 +1,4 @@
-# systemd + Standard Image Configuration
+# Systemd + Standard Image Configuration
 #
 # This file configures the build for:
 # - Init System: systemd
