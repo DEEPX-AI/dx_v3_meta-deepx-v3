@@ -7,14 +7,14 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 inherit ${@bb.utils.contains('VIRTUAL-RUNTIME_init_manager', 'systemd', 'systemd', '', d)}
 
-FILESEXTRAPATHS:prepend := "${THISDIR}:"
-
 # Configuration
 ISP_VSI_SENSOR ?= "os08a20"
 ISP_VSI_BUILD_MODE ?= "release"
 ISP_VSI_DAEMON_ENABLE ?= "0"
 
 # Source files
+FILESEXTRAPATHS:prepend := "${THISDIR}:"
+
 SRC_URI = "\
     file://bin \
     file://sensor \

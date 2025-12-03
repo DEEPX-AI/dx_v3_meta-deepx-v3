@@ -7,12 +7,12 @@ COMPATIBLE_MACHINE = "^v3-.*"
 inherit module
 
 # Source repository
+FILESEXTRAPATHS:prepend := "${THISDIR}:"
 SRC_URI = "git://git@gh.deepx.ai/deepx/rt_v3_isp_vsi_driver;protocol=ssh;branch=main"
 SRC_URI:append = " file://bin"
 SRCREV = "${AUTOREV}"
-S = "${WORKDIR}/git"
 
-FILESEXTRAPATHS:prepend := "${THISDIR}:"
+S = "${WORKDIR}/git"
 
 # Package kernel modules and binaries
 # Note: Even with usrmerge, kernel modules are installed to /lib/modules by default
@@ -20,9 +20,8 @@ FILES:${PN} += "${bindir}/*"
 FILES:${PN} += "/lib/modules/${KERNEL_VERSION}/updates/*.ko"
 FILES:${PN} += "${nonarch_base_libdir}/modules/${KERNEL_VERSION}/updates/*.ko"
 
-# Include modprobe.d files only for systemd
-FILES:${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', \
-                '${sysconfdir}/modprobe.d/*.conf', '', d)}"
+# Include modprobe.d files only for systemd (add to blacklist)
+FILES:${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${sysconfdir}/modprobe.d/*.conf', '', d)}"
 
 # Skip usrmerge check for kernel modules (they are always in /lib/modules)
 INSANE_SKIP:${PN} += "usrmerge"
@@ -77,16 +76,17 @@ do_install() {
 }
 
 do_install:append() {
-    # Install ISP module management script (usrmerge: use ${bindir})
-    install -d ${D}${bindir}
+    # Install ISP module management script
     if [ -d "${WORKDIR}/bin" ]; then
-        install -m 0755 "${WORKDIR}/bin"/* ${D}${bindir}/
-    fi
+        install -d ${D}${bindir}
 
-    # Update MODULE_DIR to use current kernel version (usrmerge: use ${nonarch_base_libdir})
-    if [ -f "${D}${bindir}/isp_module.sh" ]; then
-        sed -i "s|MODULE_DIR=\"/lib/modules/[^\"]*\"|MODULE_DIR=\"${nonarch_base_libdir}/modules/${KERNEL_VERSION}/updates\"|g" \
-            "${D}${bindir}/isp_module.sh"
+        # Update MODULE_DIR to use current kernel version
+        if [ -f "${WORKDIR}/bin/isp_module.sh" ]; then
+            sed -i "s|MODULE_DIR=\"/lib/modules/[^\"]*\"|MODULE_DIR=\"${nonarch_base_libdir}/modules/${KERNEL_VERSION}/updates\"|g" \
+                "${WORKDIR}/bin/isp_module.sh"
+        fi
+
+        install -m 0755 "${WORKDIR}/bin"/* ${D}${bindir}/
     fi
 }
 
