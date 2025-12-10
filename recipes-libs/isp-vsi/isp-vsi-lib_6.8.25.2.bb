@@ -9,7 +9,7 @@ inherit ${@bb.utils.contains('VIRTUAL-RUNTIME_init_manager', 'systemd', 'systemd
 
 # Configuration
 ISP_VSI_SENSOR ?= "os08a20"
-ISP_VSI_BUILD_MODE ?= "release"
+ISP_VSI_BUILD_TYPE ?= "release"
 ISP_VSI_DAEMON_ENABLE ?= "0"
 
 # Source files
@@ -59,15 +59,15 @@ pkg_postinst:${PN}() {
 }
 
 do_install() {
-    local mode="${ISP_VSI_BUILD_MODE}"
-    [ "${mode}" != "debug" ] && mode="release"
+    local type="${ISP_VSI_BUILD_TYPE}"
+    [ "${type}" != "debug" ] && type="release"
 
     # Install binaries and libraries
     install -d ${D}${bindir} ${D}${libdir}/vsi
     [ -d "${WORKDIR}/bin" ] && install -m 0755 "${WORKDIR}/bin"/* ${D}${bindir}/
-    [ -f "${WORKDIR}/${mode}/bin/isp_media_server" ] && \
-        install -m 0755 "${WORKDIR}/${mode}/bin/isp_media_server" ${D}${bindir}/
-    [ -d "${WORKDIR}/${mode}/lib" ] && cp -a "${WORKDIR}/${mode}/lib"/* ${D}${libdir}/vsi/
+    [ -f "${WORKDIR}/${type}/bin/isp_media_server" ] && \
+        install -m 0755 "${WORKDIR}/${type}/bin/isp_media_server" ${D}${bindir}/
+    [ -d "${WORKDIR}/${type}/lib" ] && cp -a "${WORKDIR}/${type}/lib"/* ${D}${libdir}/vsi/
 
     # Install sensor files
     for sensor in ${ISP_VSI_SENSOR}; do
@@ -78,8 +78,8 @@ do_install() {
             install -m 0755 "${WORKDIR}/sensor/isp_${sensor}.sh" ${D}${libdir}/vsi/sensor/
         [ -d "${WORKDIR}/sensor/${sensor}/configs" ] && \
             cp -a "${WORKDIR}/sensor/${sensor}/configs"/* ${sensor_dir}/
-        [ -d "${WORKDIR}/sensor/${sensor}/${mode}" ] && \
-            cp -a "${WORKDIR}/sensor/${sensor}/${mode}"/* ${D}${libdir}/vsi/
+        [ -d "${WORKDIR}/sensor/${sensor}/${type}" ] && \
+            cp -a "${WORKDIR}/sensor/${sensor}/${type}"/* ${D}${libdir}/vsi/
     done
 
     # Install profile.d script
