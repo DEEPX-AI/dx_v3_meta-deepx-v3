@@ -44,3 +44,7 @@ local_conf_header:
   tools: |
     # Android ADB daemon for USB debugging
     IMAGE_INSTALL:append = " android-tools-adbd udc-helper"
+    # Device tools
+    IMAGE_INSTALL:append = " net-tools netplan"
+    IMAGE_INSTALL:append = " openssh nfs-utils-client"
+    IMAGE_INSTALL:append = " usbutils hdparm"
