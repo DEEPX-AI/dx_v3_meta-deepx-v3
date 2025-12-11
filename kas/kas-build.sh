@@ -197,7 +197,7 @@ fi
 IMAGE_CONFIG="${KAS_DIR}/${INIT_SYSTEM}-${IMAGE_TYPE}.yml"
 SDK_CONFIG="${KAS_DIR}/deepx-v3-sdk.yml"
 RECIPE_CONFIG=(
-#	"${KAS_DIR}/deepx-runtime.yml"
+	"${KAS_DIR}/deepx-runtime.yml"
 )
 
 # Set build configurations
