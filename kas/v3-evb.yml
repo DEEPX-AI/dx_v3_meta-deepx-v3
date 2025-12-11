@@ -18,7 +18,9 @@ local_conf_header:
 
   # Package management
   package: |
+    # Include package management for runtime package installation (apt, dnf, ....)
     PACKAGE_CLASSES = "package_deb"
+    IMAGE_FEATURES:append = " package-management"
 
   # DEEPX hardware support packages
   deepx_isp: |
