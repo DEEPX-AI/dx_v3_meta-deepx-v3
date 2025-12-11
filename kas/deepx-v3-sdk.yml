@@ -17,4 +17,4 @@ local_conf_header:
   # SDK target packages
   sdk: |
     # Development packages included in SDK sysroot for cross-compilation
-    TOOLCHAIN_TARGET_TASK:append = " dx-runtime-dev libeigen-dev libyuv-dev"
+    TOOLCHAIN_TARGET_TASK:append = " dx-runtime-dev libeigen-dev"

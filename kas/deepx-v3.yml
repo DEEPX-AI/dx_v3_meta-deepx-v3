@@ -61,7 +61,7 @@ local_conf_header:
 
   # Package management
   package: |
-    PACKAGE_CLASSES = "package_ipk"
+    PACKAGE_CLASSES ?= "package_ipk"
 
   # Development features
   features: |

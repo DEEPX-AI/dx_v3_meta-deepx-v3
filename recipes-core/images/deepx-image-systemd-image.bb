@@ -42,8 +42,8 @@ IMAGE_FEATURES = ""
 
 export IMAGE_BASENAME = "deepx-systemd-image"
 
-# Remove package management to reduce size
-IMAGE_FEATURES:remove = "package-management"
+# Include package management for runtime package installation (apt, dnf, ....)
+IMAGE_FEATURES:append = " package-management"
 
 # Only include absolute minimum packages for boot
 # packagegroup-core-boot provides: base-files, base-passwd, busybox, systemd, udev, netbase
