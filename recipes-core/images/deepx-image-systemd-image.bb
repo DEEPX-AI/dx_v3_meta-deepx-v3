@@ -43,7 +43,7 @@ IMAGE_FEATURES = ""
 export IMAGE_BASENAME = "deepx-systemd-image"
 
 # Include package management for runtime package installation (apt, dnf, ....)
-IMAGE_FEATURES:append = " package-management"
+# IMAGE_FEATURES:append = " package-management"
 
 # Only include absolute minimum packages for boot
 # packagegroup-core-boot provides: base-files, base-passwd, busybox, systemd, udev, netbase
@@ -67,14 +67,8 @@ IMAGE_INSTALL:append = " systemd-mount-data"
 # Uncomment the line below for passwordless sudo
 # EXTRA_USERS_PARAMS:append = " sed -i 's/# %sudo/%sudo/' /etc/sudoers; "
 
-# Keep essential features:
-# - kmod: Kernel module loading (required)
-# - networkd: Network management
-# - resolved: DNS resolution
-# - timesyncd: Time synchronization
-# - myhostname: Hostname resolution
-# - randomseed: Random seed for security
-BAD_RECOMMENDATIONS += " \
+# Exclude unnecessary systemd packages (works with all package formats)
+IMAGE_INSTALL:remove = " \
     systemd-battery-check \
     systemd-extra-utils \
     systemd-analyze \
@@ -113,6 +107,7 @@ IMAGE_ROOTFS_EXTRA_SPACE ?= "0"
 
 # Boot partition files
 IMAGE_BOOT_FILES ?= "${KERNEL_IMAGETYPE} linux.dtb"
+
 # Machine-specific settings
 IMAGE_MACHINE_SUFFIX = "-${MACHINE}"
 IMAGE_VERSION_SUFFIX = "-${DATETIME}"

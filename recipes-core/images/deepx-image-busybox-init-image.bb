@@ -52,7 +52,8 @@ IMAGE_FEATURES = ""
 DISTRO_FEATURES_BACKFILL  = ""
 MACHINE_FEATURES_BACKFILL = ""
 
-BAD_RECOMMENDATIONS += "busybox-syslog"
+# Exclude unnecessary systemd packages (works with all package formats)
+IMAGE_INSTALL:remove = "busybox-syslog"
 
 # Image configuration
 export IMAGE_BASENAME = "deepx-busybox-image"
