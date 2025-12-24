@@ -50,6 +50,8 @@ local_conf_header:
     # Android ADB daemon for USB debugging
     IMAGE_INSTALL:append = " android-tools-adbd udc-helper"
     # Device tools
-    IMAGE_INSTALL:append = " net-tools netplan"
     IMAGE_INSTALL:append = " openssh nfs-utils-client"
     IMAGE_INSTALL:append = " usbutils hdparm"
+    IMAGE_INSTALL:append = " net-tools"
+    # netplan requires systemd (available only with systemd init)
+    IMAGE_INSTALL:append = " ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'netplan', '', d)}"
