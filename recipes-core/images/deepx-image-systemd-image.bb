@@ -95,19 +95,6 @@ IMAGE_LINGUAS = ""
 # Use cpio format for initramfs
 IMAGE_FSTYPES = "wic wic.bmap"
 
-# WIC configuration
-WKS_FILE ?= "deepx-v3-mmc.wks"
-
-IMAGE_BOOTFS_WIC_DISK ?= "mmcblk2"
-IMAGE_BOOTFS_WIC_SIZE ?= "64M"
-
-IMAGE_ROOTFS_WIC_DISK ?= "mmcblk2"
-IMAGE_ROOTFS_WIC_SIZE ?= "4G"
-IMAGE_ROOTFS_EXTRA_SPACE ?= "0"
-
-# Boot partition files
-IMAGE_BOOT_FILES ?= "${KERNEL_IMAGETYPE} linux.dtb"
-
 # Machine-specific settings
 IMAGE_MACHINE_SUFFIX = "-${MACHINE}"
 IMAGE_VERSION_SUFFIX = "-${DATETIME}"
