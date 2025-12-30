@@ -8,7 +8,7 @@ inherit module
 
 # Source repository
 FILESEXTRAPATHS:prepend := "${THISDIR}:"
-SRC_URI = "git://git@gh.deepx.ai/deepx/rt_v3_isp_vsi_driver;protocol=ssh;branch=main"
+SRC_URI = "git://git@gh.deepx.ai/deepx/dx_v3_isp_vsi_driver;protocol=ssh;branch=main"
 SRC_URI:append = " file://bin"
 SRCREV = "${AUTOREV}"
 
