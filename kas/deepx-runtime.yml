@@ -27,7 +27,7 @@ local_conf_header:
     # DEEPX runtime and drivers : dx-driver dx-runtime
     IMAGE_INSTALL:append = " dx-driver dx-runtime"
     # DEEPX stream : dx-driver dx-runtime dx-stream
-    IMAGE_INSTALL:append = " dx-stream"
+    # IMAGE_INSTALL:append = " dx-stream"
 
     # Python development environment
     IMAGE_INSTALL:append = " python3 python3-numpy python3-pip"
