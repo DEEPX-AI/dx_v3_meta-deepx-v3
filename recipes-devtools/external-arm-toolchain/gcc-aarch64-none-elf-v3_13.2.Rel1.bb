@@ -12,7 +12,7 @@ LICENSE = "GPL-3.0-with-GCC-exception & GPL-3.0-only"
 LIC_FILES_CHKSUM = "file://share/doc/gcc/Copying.html;md5=2a62a4d37ddad55da732679acd9edf03"
 
 HOST_ARCH = "$(uname -m)"
-SRC_URI = "git://git@gh.deepx.ai/deepx/rt_toolchains;protocol=ssh;branch=arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf"
+SRC_URI = "git://git@gh.deepx.ai/deepx/dx_v3_toolchains;protocol=ssh;branch=arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf"
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
