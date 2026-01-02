@@ -4,21 +4,26 @@ DAEMON="/bin/isp_media_server"
 MODULE_SCRIPT="/bin/isp_module.sh"
 SENSOR_SCRIPT="/lib/vsi/sensor/isp_os08a20.sh"
 
-# SENSOR_SCRIPT
-# 0  = 1080p24     , 4lane,
-# 1  = 1080p60     , 4lane,
-# 3  = 2160p3.7(4K), 4lane,
-# 14 = 1080p24     , 2lane
-# 15 = 1080p60     , 2lane
+# SENSOR_SCRIPT : isp_os08a20.sh
+# -m
+#  0  = 1080p24     , RX0-4L
+#  1  = 1080p60     , RX0-4L
+#  2  = 2160p3.7(4K), RX0-4L
+#  3  = 1080p24     , RX1-4L
+#  4  = 1080p60     , RX1-4L
+#  5  = 2160p3.7(4K), RX1-4L
+#  6  = 1080p24     , RX0-2L
+#  7  = 1080p60     , RX0-2L
+#  8  = 1080p24     , RX1-2L
+#  9  = 1080p60     , RX1-2L
 
 SENSOR_MODE_COMMANDS="
 $SENSOR_SCRIPT -m 0;
-$SENSOR_SCRIPT -m 1;
-$SENSOR_SCRIPT -m 4;
-$SENSOR_SCRIPT -m 7;
-$SENSOR_SCRIPT -m 9;
+$SENSOR_SCRIPT -m 3;
+$SENSOR_SCRIPT -m 6;
+$SENSOR_SCRIPT -m 8;
 "
-SELECT_MODE=0
+
 DEBUG_LEVEL=0 # NONE:0, ERROR:1, WARNING:2, FIXME:3, INFO:4, DEBUG:5, LOG:6, TRACE:7, VERBOSE:8
 TRACE_LEVEL=0 # NONE:0, INFO:1, WARNING:2, ERROR:3, ALL:7
 
@@ -39,7 +44,7 @@ IFS='
 	local mode=0
 	for c in $SENSOR_MODE_COMMANDS; do
 		cmd=$(echo "$c" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//; /^\s*$/d')
-		if [ -n "$cmd" ] && [ ${SELECT_MODE} = ${mode} ]; then
+		if [ -n "$cmd" ]; then
 			echo "$ $cmd $mode"
 			/bin/sh -c "$cmd"
 		fi

@@ -7,14 +7,20 @@ ISP_SENSOR_LIB=libos08a20.so
 ISP_SENSOR_SYM=OS08a20_IsiCamDrvConfig
 ISP_SENSOR_DIR="/lib/vsi/sensor/os08a20"
 
-# [index] = [sensor_port]:[mipi_port]:[i2c_bus]:[sensor_mode]:[calibration json]:[manual json]:[auto json]
+# i2c bus number for sensor port
+SENSOR0_I2C_BUS=1
+SENSOR1_I2C_BUS=2
+SENSOR2_I2C_BUS=3
+SENSOR3_I2C_BUS=4
+
+# [index] = [sensor_port]:[mipi_id]:[i2c_bus]:[sensor_mode]:[calibration json]:[manual json]:[auto json]
 #
 # - sensor_port: VI200
 #    0  = VI2 port 0(RX0-4L)
 #    4  = VI2 port 4(RX1-4L)
 #    8  = VI2 port 8(RX0-2L)
 #    10 = VI2 port10(RX1-2L)
-# - mipi_port
+# - mipi_id
 #    0 = RX0-4L
 #    1 = RX1-4L
 #    2 = RX0-2L
@@ -27,16 +33,16 @@ ISP_SENSOR_DIR="/lib/vsi/sensor/os08a20"
 #    15 = 1080p60     , 2lane
 #
 SENSOR_MODE="
-0= 0:0:1: 0:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
-1= 0:0:1: 1:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
-2= 0:0:1: 3:$ISP_SENSOR_DIR/OS08a20_4k.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
-3= 4:1:1: 0:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
-4= 4:1:1: 1:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
-5= 4:1:1: 3:$ISP_SENSOR_DIR/OS08a20_4k.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
-6= 8:2:2:14:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
-7= 8:2:2:15:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
-8=10:3:2:14:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
-9=10:3:2:15:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+0= 0:0:$SENSOR0_I2C_BUS: 0:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+1= 0:0:$SENSOR0_I2C_BUS: 1:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+2= 0:0:$SENSOR0_I2C_BUS: 3:$ISP_SENSOR_DIR/OS08a20_4k.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+3= 4:1:$SENSOR1_I2C_BUS: 0:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+4= 4:1:$SENSOR1_I2C_BUS: 1:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+5= 4:1:$SENSOR1_I2C_BUS: 3:$ISP_SENSOR_DIR/OS08a20_4k.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+6= 8:2:$SENSOR2_I2C_BUS:14:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+7= 8:2:$SENSOR2_I2C_BUS:15:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+8=10:3:$SENSOR3_I2C_BUS:14:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
+9=10:3:$SENSOR3_I2C_BUS:15:$ISP_SENSOR_DIR/OS08a20_1080p.json:$ISP_SENSOR_DIR/manual_ext.json:$ISP_SENSOR_DIR/auto.json
 "
 usage() {
     echo "Usage: $0 -m <mode>"
@@ -69,7 +75,7 @@ if [ $MODE_LISTUP = true ]; then
 (
 IFS='
 '
-    echo "[index] = [sensor_port]:[mipi_port]:[i2c_bus]:[sensor_mode]:[calibration]:[manual]:[auto]"
+    echo "[index] = [sensor_port]:[mipi_id]:[i2c_bus]:[sensor_mode]:[calibration]:[manual]:[auto]"
     for m in $SENSOR_MODE; do
 	m=$(echo "$m" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//; /^\s*$/d')
 	if [ -n "$m" ]; then
@@ -79,7 +85,7 @@ IFS='
 	fi
     done
     echo "- sensor_port: 0=VI2_0(RX0-4L), 4=VI2_4(RX1-4L), 8=VI2_8(RX0-2L), 10=VI2_10(RX1-2L)"
-    echo "- mipi_port  : 0=RX0-4L, 1=RX1-4L, 2=RX0-2L, 3=RX1-2L"
+    echo "- mipi_id    : 0=RX0-4L, 1=RX1-4L, 2=RX0-2L, 3=RX1-2L"
 )
     exit 0
 fi
