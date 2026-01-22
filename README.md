@@ -204,9 +204,9 @@ cd meta-deepx-v3/kas
 **Build Outputs:**
 
 SDK installers are located in `build/tmp/deploy/sdk/`:
-- **Standard SDK**: `deepx-v3-x86_64-cortexa53-toolchain-3.0.sh`
+- **Standard SDK**: `deepx-v3-x86_64-cortexa53-toolchain-3.0-{machine}-{image}.sh`
 
-Example: `build/tmp/deploy/sdk/deepx-v3-x86_64-cortexa53-toolchain-3.0.sh`
+Example: `build/tmp/deploy/sdk/deepx-v3-x86_64-cortexa53-toolchain-3.0-v3-evb-deepx-systemd-image.sh`
 
 
 See [kas.md](documents/kas.md) for detailed KAS build system usage.
@@ -221,11 +221,11 @@ For detailed configuration options including:
 - Image customization
 - Production deployment examples
 
-**See [CONFIGURATION.md](documents/CONFIGURATION.md) for complete configuration guide.**
+**See [BSP.md](documents/BSP.md) for complete configuration guide.**
 
 ## Documentation
 
-- **[CONFIGURATION.md](documents/CONFIGURATION.md)** - Complete configuration guide with all available variables and examples
+- **[BSP.md](documents/BSP.md)** - Complete configuration guide with all available variables and examples
 - **[kas.md](documents/kas.md)** - KAS build system usage and configuration
 
 ## Contributing

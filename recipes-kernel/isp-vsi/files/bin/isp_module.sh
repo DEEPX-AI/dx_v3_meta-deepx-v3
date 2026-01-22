@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MODULE_DIR="/lib/modules/6.6.8-yocto-standard/updates"
+MODULE_DIR="/lib/modules/6.6.8/updates"
 
 MODULES="
 	${MODULE_DIR}/vvcam_mipi.ko

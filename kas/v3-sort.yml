@@ -1,21 +1,7 @@
 # DEEPX V3 Configuration for v3-sort Machine
 #
-# This configuration file sets machine-specific settings for v3-sort
-# You can select init system and image type using includes
-#
-# Usage Examples:
-#
-# 1. Build with systemd and standard image:
-#    kas build kas/deepx-v3-v3-sort.yml:kas/init-systemd.yml:kas/image-standard.yml
-#
-# 2. Build with busybox and standard image:
-#    kas build kas/deepx-v3-v3-sort.yml:kas/init-busybox.yml:kas/image-standard.yml
-#
-# 3. Build with systemd and initramfs:
-#    kas build kas/deepx-v3-v3-sort.yml:kas/init-systemd.yml:kas/image-initramfs.yml
-#
-# 4. Build with busybox and initramfs:
-#    kas build kas/deepx-v3-v3-sort.yml:kas/init-busybox.yml:kas/image-initramfs.yml
+# Machine-specific settings for v3-sort
+# Select init system and image type using includes
 
 header:
   version: 14
@@ -26,30 +12,47 @@ header:
 machine: v3-sort
 
 local_conf_header:
-  sdk_name: |
-    TOOLCHAIN_OUTPUTNAME = "deepx-v3-${SDK_ARCH}-${TUNE_PKGARCH}-toolchain-${SDK_VERSION}"
-
-  # Machine specific configuration
+  # Machine configuration
   machine_config: |
     MACHINE = "v3-sort"
 
-  # Machine specific packages (optional)
-  machine_packages: |
-    # Add v3-sort specific packages here
+  # Package management
+  package: |
+    # Include package management for runtime package installation (apt, dnf, ....)
+    PACKAGE_CLASSES = "package_deb"
+    IMAGE_FEATURES:append = " package-management"
+
+  # DEEPX hardware support packages
+  deepx_isp: |
+    # ISP (Image Signal Processor)
     IMAGE_INSTALL:append = " isp-vsi-lib isp-vsi-module"
+    # Enable ISP VSI daemon
+    ISP_VSI_DAEMON_ENABLE = "1"
+
+  # Multimedia framework
+  multimedia: |
+    # V4L2 utilities and video device controls
+    IMAGE_INSTALL:append = " v4l-utils"
+    # GStreamer multimedia framework with plugins
+    IMAGE_INSTALL:append = " gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good"
+    IMAGE_INSTALL:append = " gstreamer1.0-plugins-bad gstreamer1.0-libav"
+    PACKAGECONFIG:append:pn-gstreamer1.0-plugins-bad = " kms"
 
     # DRM library for display support
     IMAGE_INSTALL:append = " libdrm libdrm-tests"
-
-    # V4L2 utilities and controls
-    IMAGE_INSTALL:append = " v4l-utils"
-
-    # GStreamer multimedia framework
-    IMAGE_INSTALL:append = " gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good"
-    IMAGE_INSTALL:append = " gstreamer1.0-plugins-bad gstreamer1.0-libav"
-
-    # Android ADB daemon (for target)
-    IMAGE_INSTALL:append = " android-tools-adbd"
+    PACKAGECONFIG:pn-libdrm = " tests install-test-programs"
 
     # FFmpeg multimedia framework (optional)
     # IMAGE_INSTALL:append = " ffmpeg libavcodec libavformat libavutil libavfilter libswscale"
+
+  # Development tools
+  tools: |
+    # Android ADB daemon for USB debugging
+    IMAGE_INSTALL:append = " android-tools-adbd udc-helper"
+    # Device tools
+    IMAGE_INSTALL:append = " openssh nfs-utils-client"
+    IMAGE_INSTALL:append = " net-tools"
+    # Analysis utils
+    IMAGE_INSTALL:append = " usbutils hdparm htop memtester lmbench"
+    # netplan requires systemd (available only with systemd init)
+    IMAGE_INSTALL:append = " ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'netplan', '', d)}"
