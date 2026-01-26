@@ -33,21 +33,12 @@ TFA_DEBUG ?= "0"
 TFA_LOG_LEVEL ?= "40"
 EXTRA_IMAGEDEPENDS += "tfa"
 
-#TFA_BL2_BINARY = "bl2-corstone1000.bin"
-
 #
 # u-boot
 #
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-deepx"
 PREFERRED_VERSION_u-boot-deepx ?= "2023.10%"
 EXTRA_IMAGEDEPENDS += "u-boot-deepx"
-
-#UBOOT_CONFIG ??= "EFI"
-#UBOOT_CONFIG[EFI] = "corstone1000_defconfig"
-#UBOOT_ENTRYPOINT  = "0x80000000"
-#UBOOT_LOADADDRESS = "0x80000000"
-#UBOOT_BOOTARGS = "earlycon=pl011,0x1a510000 console=ttyAMA0 loglevel=9"
-#UBOOT_ARCH = "arm"
 
 #
 # Linux kernel
@@ -56,27 +47,5 @@ PREFERRED_PROVIDER_virtual/kernel:forcevariable = "linux-deepx"
 PREFERRED_VERSION_linux-deepx ?= "6.6.8%"
 KERNEL_IMAGETYPE ?= "Image"
 
-#INITRAMFS_IMAGE_BUNDLE ?= "1"
-
-#telling the build system which image is responsible of the generation of the initramfs rootfs
-# INITRAMFS_IMAGE = "core-image-minimal-initramfs"
-
-# add FF-A support in the kernel
-#MACHINE_FEATURES += "arm-ffa"
-
 # prevent the kernel image from being included in the intramfs rootfs
 PACKAGE_EXCLUDE = "kernel-image-*"
-
-# enable this feature for kernel debugging
-# MACHINE_FEATURES += "corstone1000_kernel_debug"
-
-# login terminal serial port settings
-#SERIAL_CONSOLES ?= "115200;ttyAMA0"
-
-# making sure EXTRA_IMAGEDEPENDS will be used while creating the image
-#WKS_FILE_DEPENDS:append = " ${EXTRA_IMAGEDEPENDS}"
-
-#WKS_FILE ?= "corstone1000-image.corstone1000.wks"
-
-# Disable openssl in kmod to shink the initramfs size
-#PACKAGECONFIG:remove:pn-kmod = "openssl"

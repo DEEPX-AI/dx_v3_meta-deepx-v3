@@ -1,10 +1,10 @@
-# DEEPX V3 Configuration Guide
+# DEEPX V3 BSP Configuration Guide
 
 Complete guide for configuring DEEPX V3 Yocto/OpenEmbedded BSP Layer.
 
 ## Table of Contents
 
-- [DEEPX V3 Configuration Guide](#deepx-v3-configuration-guide)
+- [DEEPX V3 BSP Configuration Guide](#deepx-v3-bsp-configuration-guide)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Boot Sequence Overview](#boot-sequence-overview)

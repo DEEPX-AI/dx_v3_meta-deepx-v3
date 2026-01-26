@@ -15,6 +15,7 @@ DEEPX V3 Yocto/OpenEmbedded BSP Layer
       - [Ubuntu 20.04 and Earlier](#ubuntu-2004-and-earlier)
       - [Ubuntu 22.04 and Later](#ubuntu-2204-and-later)
   - [Quick Start](#quick-start)
+    - [Download Source](#download-source)
     - [Building Image with KAS](#building-image-with-kas)
     - [Building SDK with KAS](#building-sdk-with-kas)
   - [Configuration](#configuration)
@@ -148,6 +149,16 @@ kas --version
 
 ## Quick Start
 
+### Download Source
+
+Clone the repository with the following command:
+
+```bash
+$ git clone git@gh.deepx.ai:deepx/dx_v3_meta-deepx-v3.git meta-deepx-v3
+```
+
+**Note:** The directory must be named **`meta-deepx-v3`** for the build to work correctly.
+
 ### Building Image with KAS
 
 Build root filesystem images for target devices:
@@ -156,14 +167,8 @@ Build root filesystem images for target devices:
 # Navigate to KAS directory
 cd meta-deepx-v3/kas
 
-# Build systemd-based standard image (ext4/wic format)
+# Build systemd-based image(ext4 format) for default target (v3-evb)
 ./kas-build.sh -t systemd -i image
-
-# Build busybox-based initramfs image (cpio format)
-./kas-build.sh -t busybox -i ramfs
-
-# Specify target machine (default: v3-evb)
-./kas-build.sh -t systemd -i image -m v3-sort
 
 # Enter shell for debugging
 ./kas-build.sh -t systemd -i image -s
@@ -188,14 +193,8 @@ Build Software Development Kits for cross-compilation:
 # Navigate to KAS directory
 cd meta-deepx-v3/kas
 
-# Build standard SDK (for application development)
+# Build SDK(for application development) for default target (v3-evb)
 ./kas-build.sh -t systemd -i image -S
-
-# Build SDK for specific machine
-./kas-build.sh -t systemd -i image -m v3-sort -S
-
-# Build both image and SDK together
-./kas-build.sh -t systemd -i image -m v3-evb -S
 ```
 
 **SDK Types:**
@@ -204,9 +203,9 @@ cd meta-deepx-v3/kas
 **Build Outputs:**
 
 SDK installers are located in `build/tmp/deploy/sdk/`:
-- **Standard SDK**: `deepx-v3-x86_64-cortexa53-toolchain-3.0.sh`
+- **Standard SDK**: `deepx-v3-x86_64-cortexa53-toolchain-3.0-{machine}-{image}.sh`
 
-Example: `build/tmp/deploy/sdk/deepx-v3-x86_64-cortexa53-toolchain-3.0.sh`
+Example: `build/tmp/deploy/sdk/deepx-v3-x86_64-cortexa53-toolchain-3.0-v3-evb-deepx-systemd-image.sh`
 
 
 See [kas.md](documents/kas.md) for detailed KAS build system usage.
@@ -221,11 +220,11 @@ For detailed configuration options including:
 - Image customization
 - Production deployment examples
 
-**See [CONFIGURATION.md](documents/CONFIGURATION.md) for complete configuration guide.**
+**See [BSP.md](documents/BSP.md) for complete configuration guide.**
 
 ## Documentation
 
-- **[CONFIGURATION.md](documents/CONFIGURATION.md)** - Complete configuration guide with all available variables and examples
+- **[BSP.md](documents/BSP.md)** - Complete configuration guide with all available variables and examples
 - **[kas.md](documents/kas.md)** - KAS build system usage and configuration
 
 ## Contributing

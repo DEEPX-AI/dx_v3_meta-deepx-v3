@@ -10,7 +10,7 @@ LICENSE = "CLOSED"
 
 PROVIDES = "sign-image"
 
-SRC_URI = "git://git@github.com/DEEPX-AI/dx_v3_linux_tool_sign_image.git;protocol=ssh;branch=main"
+SRC_URI = "git://git@gh.deepx.ai/deepx/dx_v3_linux_tool_sign_image;protocol=ssh;branch=main"
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"

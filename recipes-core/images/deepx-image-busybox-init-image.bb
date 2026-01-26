@@ -52,23 +52,14 @@ IMAGE_FEATURES = ""
 DISTRO_FEATURES_BACKFILL  = ""
 MACHINE_FEATURES_BACKFILL = ""
 
-BAD_RECOMMENDATIONS += "busybox-syslog"
+# Exclude unnecessary systemd packages (works with all package formats)
+IMAGE_INSTALL:remove = "busybox-syslog"
 
 # Image configuration
 export IMAGE_BASENAME = "deepx-busybox-image"
 IMAGE_LINGUAS = ""
 
 IMAGE_FSTYPES = "wic wic.bmap"
-
-# WIC configuration
-WKS_FILE ?= "deepx-v3-mmc.wks"
-
-IMAGE_BOOTFS_WIC_DISK ?= "mmcblk2"
-IMAGE_BOOTFS_WIC_SIZE ?= "64M"
-
-IMAGE_ROOTFS_WIC_DISK ?= "mmcblk2"
-IMAGE_ROOTFS_WIC_SIZE ?= "512M"
-IMAGE_ROOTFS_EXTRA_SPACE ?= "0"
 
 # Boot partition files
 IMAGE_BOOT_FILES ?= "${KERNEL_IMAGETYPE} linux.dtb"

@@ -54,15 +54,14 @@ local_conf_header:
     DISTRO = "deepx-v3"
     MACHINE ?= "UNDEFINED"
 
-  # Shared directories
-  # Downloads and sstate cache are fixed under build directory
+  # Shared directories (downloads and sstate cache under build directory)
   paths: |
     DL_DIR ?= "${TOPDIR}/downloads"
     SSTATE_DIR ?= "${TOPDIR}/sstate-cache"
 
   # Package management
   package: |
-    PACKAGE_CLASSES = "package_ipk"
+    PACKAGE_CLASSES ?= "package_ipk"
 
   # Development features
   features: |
