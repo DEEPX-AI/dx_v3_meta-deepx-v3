@@ -5,7 +5,6 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-KAS_DIR="${SCRIPT_DIR}"
 
 # Default values
 MACHINE="v3-evb"
@@ -14,10 +13,14 @@ IMAGE_TYPE=""
 ACTION="build"
 SHOW_LIST=0
 BUILD_SDK=0
+MACHINE_PREFIX="v3"
+
+BSP_DIR="$(realpath "${SCRIPT_DIR}/../../")"
+KAS_DIR="${SCRIPT_DIR}"
 
 # Build directory configuration
 # Can be overridden with -b option
-BUILD_DIR="${SCRIPT_DIR}/../../build"
+BUILD_DIR="${BSP_DIR}/build"
 
 function logerr() { echo -e "\033[1;31m$*\033[0m" >&2; }
 function logmsg() { echo -e "\033[0;33m$*\033[0m"; }
@@ -38,14 +41,14 @@ print_usage() {
 	echo "Usage: $0 -t <init> -i <image> [OPTIONS]"
 	echo ""
 	echo "Required Options:"
-	echo "  -t <init>       System : systemd | busybox"
-	echo "  -i <image>      Image  : image | ramfs"
+	echo "  -t <init>       Init system     : systemd | busybox"
+	echo "  -i <image>      root filesystem : image | ramfs"
 	echo ""
 	echo "Optional:"
 	echo "  -m <machine>    Machine name (default: ${MACHINE})"
-	echo "                  Available machines:"
-	ls -1 "${KAS_DIR}"/v3-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/                    /'
-	echo "  -b <dir>        Build directory (default: $(realpath "${BUILD_DIR}"))"
+	echo "                  Available machines: '${MACHINE_PREFIX}-*.yml'"
+	ls -1 "${KAS_DIR}"/${MACHINE_PREFIX}-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/                    /'
+	echo "  -b <dir>        Build directory (absolute path or relative bsp dir:${BSP_DIR})"
 	echo "  -s              Enter shell instead of building"
 	echo "  -S              Build SDK (populate_sdk)"
 	echo "  -l              List all available combinations"
@@ -60,20 +63,20 @@ print_usage() {
 list_combinations() {
 	print_header "Available Build Combinations"
 	echo ""
-	logmsg " systemd + image (ext4/wic)"
+	logmsg " systemd init + image (ext4/wic)"
 	echo " $ $0 -t systemd -i image -m <machine>"
 	echo ""
-	logmsg " systemd + ramfs (cpio)"
+	logmsg " systemd init + ramfs (cpio)"
 	echo " $ $0 -t systemd -i ramfs -m <machine>"
 	echo ""
-	logmsg " busybox + image (ext4/wic)"
+	logmsg " busybox init + image (ext4/wic)"
 	echo " $ $0 -t busybox -i image -m <machine>"
 	echo ""
-	logmsg " busybox + ramfs (cpio)"
+	logmsg " busybox init + ramfs (cpio)"
 	echo " $ $0 -t busybox -i ramfs -m <machine>"
 	echo ""
 	logmsg "Available machines:"
-	ls -1 "${KAS_DIR}"/v3-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/  - /'
+	ls -1 "${KAS_DIR}"/${MACHINE_PREFIX}-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/  - /'
 	echo ""
 }
 
@@ -90,7 +93,14 @@ while getopts "t:i:m:b:sSlh" opt; do
 			MACHINE="${OPTARG}"
 			;;
 		b)
-			BUILD_DIR="${OPTARG}"
+			# Check if build dir contains path separator or starts with /
+			if [[ "${OPTARG}" == /* ]]; then
+				# Use as-is if it's a path (absolute or relative)
+				BUILD_DIR="${OPTARG}"
+			else
+				# Otherwise, use default parent directory
+				BUILD_DIR="../../${OPTARG}"
+			fi
 			;;
 		s)
 			ACTION="shell"
@@ -123,6 +133,8 @@ done
 shift $((OPTIND - 1))
 
 # Export build directory for KAS
+mkdir -p ${BUILD_DIR}
+BUILD_DIR=$(realpath "${BUILD_DIR}")
 export KAS_BUILD_DIR="${BUILD_DIR}"
 
 # Show list if requested
@@ -171,50 +183,56 @@ case ${IMAGE_TYPE} in
 esac
 
 # Machine config file
-MACHINE_FILE="${KAS_DIR}/${MACHINE}.yml"
+MACHINE_CONFIG="${KAS_DIR}/${MACHINE}.yml"
 
 # Check if machine file exists
-if [ ! -f "${MACHINE_FILE}" ]; then
-	logerr "Error: Machine file not found: ${MACHINE_FILE}"
+if [ ! -f "${MACHINE_CONFIG}" ]; then
+	logerr "Error: Machine file not found: ${MACHINE_CONFIG}"
 	logmsg "Available machines:"
-	ls -1 "${KAS_DIR}"/v3-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/  - /'
+	ls -1 "${KAS_DIR}"/${MACHINE_PREFIX}-*.yml | sed 's|.*/||' | sed 's/.yml$//' | sed 's/^/  - /'
 	exit 1
 fi
 
 # Build configuration strings
-# Use combined configuration file (init + image type)
-CONFIG_FILE="${KAS_DIR}/${INIT_SYSTEM}-${IMAGE_TYPE}.yml"
-KAS_CONFIG="${MACHINE_FILE}:${CONFIG_FILE}"
+IMAGE_CONFIG="${KAS_DIR}/${INIT_SYSTEM}-${IMAGE_TYPE}.yml"
+SDK_CONFIG="${KAS_DIR}/deepx-v3-sdk.yml"
+RECIPE_CONFIG=(
+	"${KAS_DIR}/deepx-runtime.yml"
+)
+
+# Set build configurations
+KAS_CONFIG="${MACHINE_CONFIG}:${IMAGE_CONFIG}"
+if [ ! -z "${RECIPE_CONFIG[*]}" ]; then
+	KAS_CONFIG="${KAS_CONFIG}:${RECIPE_CONFIG[*]}"
+fi
 
 # Execute action
-logmsg "Machine     : ${MACHINE}"
-logmsg "Init        : ${INIT_SYSTEM}"
-logmsg "Image       : ${IMAGE_TYPE}"
-logmsg "Image name  : ${IMAGE_NAME}"
-logmsg "Build Dir   : $(realpath "${KAS_BUILD_DIR}")"
-logmsg "Config      : ${KAS_CONFIG}"
-
 if [ "${ACTION}" = "build" ]; then
 	if [ ${BUILD_SDK} -eq 1 ]; then
-		target="SDK"
+		KAS_CONFIG="${KAS_CONFIG}:${SDK_CONFIG}"
 		options="-- -c populate_sdk ${IMAGE_NAME}"
-		print_header "Building SDK for ${INIT_SYSTEM} + ${IMAGE_TYPE}"
+		print_header "Building SDK for ${INIT_SYSTEM} + ${IMAGE_TYPE} + SDK"
 	else
-		target="Image"
 		options=""
 		print_header "Building ${INIT_SYSTEM} + ${IMAGE_TYPE} image"
 	fi
-	logmsg "Target      : ${target}"
-	echo ""
+
 	command="kas build ${KAS_CONFIG} ${options}"
 
 elif [ "${ACTION}" = "shell" ]; then
 	print_header "Entering ${INIT_SYSTEM} build shell"
-	echo ""
 	command="kas shell ${KAS_CONFIG}"
 fi
 
+logmsg "Machine     : ${MACHINE}"
+logmsg "Init        : ${INIT_SYSTEM}"
+logmsg "Root FS     : ${IMAGE_TYPE}"
+logmsg "Image name  : ${IMAGE_NAME}"
+logmsg "Build Dir   : ${KAS_BUILD_DIR}"
+logmsg "Config      : $(echo "${KAS_CONFIG}" | sed 's|:|\n              |g')"
+echo ""
 logmsg "$ ${command}"
 echo ""
+
 bash -c "${command}"
 

@@ -1,0 +1,45 @@
+# DEEPX Runtime (meta-dxrt) Configuration
+#
+# Configuration for meta-dxrt layer including DEEPX runtime and dependencies
+# Include this file when building images that require DEEPX runtime support
+#
+# Usage:
+#   kas build kas/v3-evb.yml:kas/systemd-image.yml:kas/deepx-runtime.yml
+
+header:
+  version: 14
+
+# Repository definitions
+repos:
+  meta-dxrt:
+    url: git@gh.deepx.ai:deepx/dx_v3_meta-dxrt.git
+    path: ../../meta-dxrt
+    branch: main
+    layers:
+      .:
+
+local_conf_header:
+  # DEEPX runtime device configuration
+  deepx_runtime: |
+    # Set runtime device to v3
+    DX_DEVICE = "v3"
+
+    # DEEPX runtime and drivers : dx-driver dx-runtime
+    IMAGE_INSTALL:append = " dx-driver dx-runtime"
+    # DEEPX stream : dx-driver dx-runtime dx-stream
+    IMAGE_INSTALL:append = " dx-stream"
+
+    # Python development environment
+    IMAGE_INSTALL:append = " python3 python3-numpy python3-pip"
+    # Application libraries for DEEPX stream processing
+    IMAGE_INSTALL:append = " json-glib zlib"
+    IMAGE_INSTALL:append = " opencv python3-opencv"
+
+    # DEEPX DSP device configuration
+    IMAGE_INSTALL:append = " dx-dsp-driver dx-dsp-lib dx-dsp-lib-tests mem-load"
+    DSP_LOAD_DAEMON_ENABLE = "1"
+
+  # DEEPX runtime/stream SDK target packages
+  sdk: |
+    # Development packages included in SDK sysroot for cross-compilation
+    TOOLCHAIN_TARGET_TASK:append = " dx-runtime-dev libeigen-dev dx-stream-dev"

@@ -1,4 +1,4 @@
-# busybox + Standard Image Configuration
+# Busybox + Standard Image Configuration
 #
 # This file configures the build for:
 # - Init System: busybox

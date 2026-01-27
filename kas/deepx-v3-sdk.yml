@@ -1,0 +1,20 @@
+# DEEPX V3 SDK Configuration
+#
+# SDK-specific settings for toolchain generation
+# Include this file when building SDK with populate_sdk task
+#
+# Usage:
+#   kas build kas/v3-evb.yml:kas/systemd-image.yml:kas/deepx-v3-sdk.yml -- -c populate_sdk
+
+header:
+  version: 14
+
+local_conf_header:
+  # SDK toolchain filename format
+  sdk_name: |
+    TOOLCHAIN_OUTPUTNAME = "deepx-v3-${SDK_ARCH}-${TUNE_PKGARCH}-toolchain-${SDK_VERSION}-${MACHINE}-${IMAGE_BASENAME}"
+
+  # SDK target packages
+  sdk: |
+    # Development packages included in SDK sysroot for cross-compilation
+    TOOLCHAIN_TARGET_TASK:append = " dx-runtime-dev libeigen-dev"

@@ -149,10 +149,10 @@ kas build v3-evb.yml:systemd-image.yml -- -c populate_sdk deepx-image-systemd-im
 Example installation:
 ```bash
 # Default installation (interactive)
-./deepx-v3-x86_64-cortexa53-toolchain-3.0.sh
+./deepx-v3-x86_64-cortexa53-toolchain-3.0-{machine}-{image}.sh
 
 # Non-interactive installation with custom path
-./deepx-v3-x86_64-cortexa53-toolchain-3.0.sh -d /home/user/sdk -y
+./deepx-v3-x86_64-cortexa53-toolchain-3.0-{machine}-{image}.sh -d /home/user/sdk -y
 
 # Installation options:
 # -d <path>  : Install to custom directory
