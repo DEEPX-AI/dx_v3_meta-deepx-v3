@@ -36,9 +36,9 @@ desktop.ini
 
 # Build artifacts (if accidentally created in layer)
 *.o
-*.a
-*.so
-*.so.*
+#*.a
+#*.so
+#*.so.*
 *.log
 
 # Temporary directories
