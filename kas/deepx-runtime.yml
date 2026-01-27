@@ -12,7 +12,7 @@ header:
 # Repository definitions
 repos:
   meta-dxrt:
-    url: git@gh.deepx.ai:deepx/dx_v3_meta-dxrt.git
+    url: https://github.com/DEEPX-AI/dx_v3_meta-dxrt.git
     path: ../../meta-dxrt
     branch: main
     layers:

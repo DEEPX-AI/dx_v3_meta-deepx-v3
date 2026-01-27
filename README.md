@@ -154,7 +154,7 @@ kas --version
 Clone the repository with the following command:
 
 ```bash
-$ git clone git@gh.deepx.ai:deepx/dx_v3_meta-deepx-v3.git meta-deepx-v3
+$ git clone https://github.com/DEEPX-AI/dx_v3_meta-deepx-v3.git meta-deepx-v3
 ```
 
 **Note:** The directory must be named **`meta-deepx-v3`** for the build to work correctly.
