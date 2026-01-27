@@ -8,7 +8,5 @@ require trusted-firmware-m-deepx_${PV}.inc
 
 LIC_FILES_CHKSUM = "file://license.rst;md5=07f368487da347f3c7bd0fc3085f3afa"
 
-DEPENDS = "gcc-arm-none-eabi-native ninja-native python3-jinja2-native python3-pyyaml-native sign-image-native"
-
-SRC_URI = "git://git@github.com/DEEPX-AI/dx_v3_trusted-firmware-m;protocol=ssh;branch=main"
+SRC_URI = "git://git@github.com/DEEPX-AI/dx_v3_trusted-firmware-m;protocol=https;branch=main"
 SRCREV = "${AUTOREV}"
